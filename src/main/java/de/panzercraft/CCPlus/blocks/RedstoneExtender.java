@@ -2,6 +2,7 @@ package de.panzercraft.CCPlus.blocks;
 
 import de.panzercraft.CCPlus.entities.PlayerDetectorPlusTileEntity;
 import de.panzercraft.CCPlus.entities.RedstoneExtenderTileEntity;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
@@ -26,7 +27,74 @@ public class RedstoneExtender extends BlockContainer {
 	}
 	
 	private int getPowerLevelInput(World world, int x, int y, int z, EnumFacing face) {
-		return world.getIndirectPowerLevelTo(x, y, z, face.ordinal());
+		switch(face) {
+			case DOWN:
+				return world.getIndirectPowerLevelTo(x, y + 1, z, 4);
+			case EAST:
+				return world.getIndirectPowerLevelTo(x - 1, y, z, 3);
+			case NORTH:
+				return world.getIndirectPowerLevelTo(x, y, z + 1, 2);
+			case SOUTH:
+				return world.getIndirectPowerLevelTo(x, y, z - 1, 0);
+			case UP:
+				return world.getIndirectPowerLevelTo(x, y - 1, z, -1);
+			case WEST:
+				return world.getIndirectPowerLevelTo(x + 1, y, z, 1);
+			default:
+				return 0;
+		}
+	}
+	
+	public static EnumFacing convertToEnumFacing(int side) {
+		switch(side) {
+			case -1:
+				return EnumFacing.UP;
+			case 0:
+				return EnumFacing.NORTH;
+			case 1:
+				return EnumFacing.EAST;
+			case 2:
+				return EnumFacing.SOUTH;
+			case 3:
+				return EnumFacing.WEST;
+			case 4:
+				return EnumFacing.DOWN;
+			default:
+				return EnumFacing.UP;
+		}
+	}
+	
+	public static int convertFromEnumFacing(EnumFacing face) {
+		switch(face) {
+			case DOWN:
+				return 4;
+			case EAST:
+				return 1;
+			case NORTH:
+				return 0;
+			case SOUTH:
+				return 2;
+			case UP:
+				return -1;
+			case WEST:
+				return 3;
+			default:
+				return -1;
+		}
+	}
+	
+	public void update(RedstoneExtenderTileEntity rete) {
+		World world = rete.getWorldObj();
+		int x = rete.xCoord;
+		int y = rete.yCoord;
+		int z = rete.zCoord;
+		world.notifyBlocksOfNeighborChange(x, y, z, this);
+        world.notifyBlocksOfNeighborChange(x + 1, y, z, this);
+        world.notifyBlocksOfNeighborChange(x - 1, y, z, this);
+        world.notifyBlocksOfNeighborChange(x, y + 1, z, this);
+        world.notifyBlocksOfNeighborChange(x, y - 1, z, this);
+        world.notifyBlocksOfNeighborChange(x, y, z + 1, this);
+        world.notifyBlocksOfNeighborChange(x, y, z - 1, this);
 	}
 	
 	@Override
@@ -34,12 +102,7 @@ public class RedstoneExtender extends BlockContainer {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if(te instanceof RedstoneExtenderTileEntity) {
 			RedstoneExtenderTileEntity rete = (RedstoneExtenderTileEntity) te;
-			for(EnumFacing face : EnumFacing.values()) {
-				if(face.ordinal() == side) {
-					return rete.output.get(face);
-				}
-			}
-			return 0;
+			return rete.output.get(convertToEnumFacing(side));
 		} else {
 			return 0;
 		}
@@ -56,6 +119,7 @@ public class RedstoneExtender extends BlockContainer {
 		}
     }
 	
+	@Override
 	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if(te instanceof RedstoneExtenderTileEntity) {
@@ -64,6 +128,11 @@ public class RedstoneExtender extends BlockContainer {
 		} else {
 			return 0;
 		}
+    }
+	
+	@Override
+	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side) {
+        return side != -1;
     }
 	
 }

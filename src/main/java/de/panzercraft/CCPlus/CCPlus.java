@@ -33,7 +33,9 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import de.panzercraft.CCPlus.blocks.PlayerDetectorPlus;
+import de.panzercraft.CCPlus.blocks.RedstoneExtender;
 import de.panzercraft.CCPlus.entities.PlayerDetectorPlusTileEntity;
+import de.panzercraft.CCPlus.entities.RedstoneExtenderTileEntity;
 import ibxm.Player;
 
 @Mod(modid = CCPlus.MODID, version = CCPlus.VERSION, dependencies = "required-after:ComputerCraft;after:CCTurtle")
@@ -45,6 +47,7 @@ public class CCPlus {
     public static boolean player_detector_plus_explosion_disabled = true;
     
     public PlayerDetectorPlus playerdetectorplusinstance = new PlayerDetectorPlus(Material.ground);
+    public RedstoneExtender redstoneextenderinstance = new RedstoneExtender(Material.ground);
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -57,7 +60,7 @@ public class CCPlus {
     }
     
     @EventHandler
-    public void init(FMLInitializationEvent event) {
+    public void init(FMLInitializationEvent event) {/*
     	playerdetectorplusinstance.setCreativeTab(CreativeTabs.tabMisc);
     	GameRegistry.registerBlock(playerdetectorplusinstance, "de.panzercraft.block.PlayerDetectorPlus");
     	GameRegistry.registerTileEntity(PlayerDetectorPlusTileEntity.class, "de.panzercraft.entities.PlayerDetectorPlusTileEntitry");
@@ -68,6 +71,23 @@ public class CCPlus {
 			public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
 				TileEntity temp = world.getTileEntity(x, y, z);
 				if(temp instanceof PlayerDetectorPlusTileEntity) {
+					return (IPeripheral) temp;
+				} else {
+					return null;
+				}
+			}
+    		
+    	});*/
+    	redstoneextenderinstance.setCreativeTab(CreativeTabs.tabMisc);
+    	GameRegistry.registerBlock(redstoneextenderinstance, "de.panzercraft.block.RedstoneExtender");
+    	GameRegistry.registerTileEntity(RedstoneExtenderTileEntity.class, "de.panzercraft.entities.RedstoneExtenderTileEntitry");
+    	LanguageRegistry.addName(redstoneextenderinstance, "Redstone Extender");
+    	ComputerCraftAPI.registerPeripheralProvider(new IPeripheralProvider() {
+
+			@Override
+			public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
+				TileEntity temp = world.getTileEntity(x, y, z);
+				if(temp instanceof RedstoneExtenderTileEntity) {
 					return (IPeripheral) temp;
 				} else {
 					return null;
