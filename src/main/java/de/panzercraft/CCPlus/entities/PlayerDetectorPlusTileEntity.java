@@ -38,7 +38,6 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 		switch(method) {
 			case 0:
 				//Test das geht
-				//Eclipse First Edit
 				return new Object[] {world.provider.dimensionId};
 			case 1:
 				EntityPlayer ep1 = null;
