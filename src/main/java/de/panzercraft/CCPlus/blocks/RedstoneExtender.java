@@ -27,19 +27,20 @@ public class RedstoneExtender extends BlockContainer {
 	}
 	
 	private int getPowerLevelInput(World world, int x, int y, int z, EnumFacing face) {
+		int side = convertFromEnumFacing(face);
 		switch(face) {
 			case DOWN:
-				return world.getIndirectPowerLevelTo(x, y + 1, z, 4);
+				return world.getIndirectPowerLevelTo(x, y + 1, z, side);
 			case EAST:
-				return world.getIndirectPowerLevelTo(x - 1, y, z, 3);
+				return world.getIndirectPowerLevelTo(x - 1, y, z, side);
 			case NORTH:
-				return world.getIndirectPowerLevelTo(x, y, z + 1, 2);
+				return world.getIndirectPowerLevelTo(x, y, z + 1, side);
 			case SOUTH:
-				return world.getIndirectPowerLevelTo(x, y, z - 1, 0);
+				return world.getIndirectPowerLevelTo(x, y, z - 1, side);
 			case UP:
-				return world.getIndirectPowerLevelTo(x, y - 1, z, -1);
+				return world.getIndirectPowerLevelTo(x, y - 1, z, side);
 			case WEST:
-				return world.getIndirectPowerLevelTo(x + 1, y, z, 1);
+				return world.getIndirectPowerLevelTo(x + 1, y, z, side);
 			default:
 				return 0;
 		}
