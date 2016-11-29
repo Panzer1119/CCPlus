@@ -1,12 +1,12 @@
 [
 {
-  "modid": "OnlineConfig",
-  "name": "OnlineConfig",
-  "description": "This is a mod to have in every minecraft the same options.",
+  "modid": "CCPlus",
+  "name": "CCPlus",
+  "description": "ComputerCraft extension",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "www.panzercraft.de/programmieren/Mods/1.7.10/",
-  "updateUrl": "www.panzercraft.de/programmieren/Mods/1.7.10/OnlineConfig.jar",
+  "updateUrl": "www.panzercraft.de/programmieren/Mods/1.7.10/CCPlus.jar",
   "authorList": ["Panzer1119"],
   "credits": "pcfreak9000",
   "logoFile": "",
