@@ -1,5 +1,7 @@
 package de.panzercraft.CCPlus.entities;
 
+import java.util.HashMap;
+
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -22,6 +24,20 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 	public PlayerDetectorPlusTileEntity(World world) {
 		this.world = world;
 	}
+	
+	private HashMap<String, Object> getPlayerInfo(EntityPlayer player) {
+		HashMap<String, Object> data_player = new HashMap<String, Object>();
+		data_player.put("x", player.posX);
+		data_player.put("y", player.posY);
+		data_player.put("z", player.posZ);
+		data_player.put("dim", player.dimension);
+		data_player.put("health", player.getHealth());
+		data_player.put("creative", player.capabilities.isCreativeMode);
+		data_player.put("maxHealth", player.getMaxHealth());
+		data_player.put("foodLevel", player.getFoodStats().getFoodLevel());
+		data_player.put("saturationLevel", player.getFoodStats().getSaturationLevel());
+		return data_player;
+	}
 
 	@Override
 	public String getType() {
@@ -37,7 +53,6 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 		switch(method) {
 			case 0:
-				//Test das geht
 				return new Object[] {world.provider.dimensionId};
 			case 1:
 				EntityPlayer ep1 = null;
@@ -47,21 +62,20 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 				} else {
 					ep1 = Minecraft.getMinecraft().thePlayer;
 				}
-				return new Object[] {ep1.posX, ep1.posY, ep1.posZ, ep1.dimension};
+				return new Object[] {getPlayerInfo(ep1)};
 			case 2:
 				Object[] data = new Object[MinecraftServer.getServer().getConfigurationManager().playerEntityList.size()];
-				String[] names = new String[data.length + 1];
+				HashMap<String, HashMap<String, Object>> data_players = new HashMap<String, HashMap<String, Object>>();
 				for(int i = 0; i < data.length; i++) {
 					data[i] = MinecraftServer.getServer().getConfigurationManager().playerEntityList.get(i);
 					if(data[i] instanceof EntityPlayer) {
 						EntityPlayer ep2 = (EntityPlayer) data[i];
-						names[i] = ep2.getDisplayName();
+						data_players.put(ep2.getDisplayName(), getPlayerInfo(ep2));
 					} else {
-						names[i] = null;
+						//Nothing
 					}
 				}
-				names[names.length - 1] = "Paul";
-				return new Object[] {names};
+				return new Object[] {data_players};
 			case 3: //
 				if(explosion_disabled) {
 					return new Object[] {false};
