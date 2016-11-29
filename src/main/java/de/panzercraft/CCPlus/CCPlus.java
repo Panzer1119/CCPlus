@@ -19,6 +19,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -40,11 +42,18 @@ public class CCPlus {
     public static final String MODID = "CCPlus";
     public static final String VERSION = "0.1";
     
+    public static boolean player_detector_plus_explosion_disabled = true;
+    
     public PlayerDetectorPlus playerdetectorplusinstance = new PlayerDetectorPlus(Material.ground);
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-    	
+    	Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+    	config.load();
+    	Property prop = config.get("debug", "player_detector_plus_explosion_disabled", player_detector_plus_explosion_disabled);
+    	prop.comment = "Disables the createExplosion function from the player detector plus which was only for testing (Default: true)";
+    	player_detector_plus_explosion_disabled = prop.getBoolean(player_detector_plus_explosion_disabled);
+    	config.save();
     }
     
     @EventHandler

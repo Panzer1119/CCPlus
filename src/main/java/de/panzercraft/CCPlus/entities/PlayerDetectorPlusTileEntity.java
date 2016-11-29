@@ -6,6 +6,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import de.panzercraft.CCPlus.CCPlus;
 import de.panzercraft.CCPlus.utils.MathPlus;
 import de.panzercraft.CCPlus.utils.PlayerPlus;
 import net.minecraft.client.Minecraft;
@@ -19,7 +20,6 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 	
 	private World world;
 	private static final double range = 10.0;
-	private boolean explosion_disabled = true;
 
 	public PlayerDetectorPlusTileEntity(World world) {
 		this.world = world;
@@ -77,7 +77,7 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 				}
 				return new Object[] {data_players};
 			case 3: //
-				if(explosion_disabled) {
+				if(CCPlus.player_detector_plus_explosion_disabled) {
 					return new Object[] {false};
 				}
 				Double explosionX = ((Number) arguments[0]).doubleValue();
@@ -110,7 +110,7 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 
 	@Override
 	public boolean equals(IPeripheral other) {
-		return other == this;
+		return other == this && other instanceof PlayerDetectorPlusTileEntity;
 	}
 
 }
