@@ -37,6 +37,7 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 		switch(method) {
 			case 0:
+				//Test das geht
 				return new Object[] {world.provider.dimensionId};
 			case 1:
 				EntityPlayer ep1 = null;
