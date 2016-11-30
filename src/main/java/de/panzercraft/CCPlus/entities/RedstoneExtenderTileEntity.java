@@ -15,9 +15,8 @@ import net.minecraft.world.World;
 public class RedstoneExtenderTileEntity extends TileEntity implements IPeripheral {
 
 	private World world;
-	public boolean isStrongOutput = false;
-	public boolean isWeakOutput = false;
 	public int strength = 0;
+	public final HashMap<EnumFacing, Boolean> output_strong = new HashMap<EnumFacing, Boolean>();
 	public final HashMap<EnumFacing, Integer> output = new HashMap<EnumFacing, Integer>();
 	public final HashMap<EnumFacing, Integer> input = new HashMap<EnumFacing, Integer>();
 
@@ -28,6 +27,7 @@ public class RedstoneExtenderTileEntity extends TileEntity implements IPeriphera
 	
 	private void init() {
 		for(EnumFacing face : EnumFacing.values()) {
+			output_strong.put(face, true);
 			output.put(face, 0);
 			input.put(face, 0);
 		}
@@ -50,6 +50,8 @@ public class RedstoneExtenderTileEntity extends TileEntity implements IPeriphera
 	@Override
 	public String[] getMethodNames() {
 		return new String[] {"getRedstoneInput", "setRedstoneOutput", "getRedstoneAnalogInput", "setRedstoneAnalogOutput"};
+		//Every setRedstone function can have up to 3 parameters the first has to be the side which gets accessed, the second parameter should be the strength and the third parameter
+		//is the option to set if the output is strong or not
 	}
 	
 	public EnumFacing convertToEnumFacing(String side) {
@@ -61,24 +63,35 @@ public class RedstoneExtenderTileEntity extends TileEntity implements IPeriphera
 		String side = ((String) arguments[0]);
 		EnumFacing face = convertToEnumFacing(side);
 		int strength = 0;
-		if(arguments.length > 1) {
-			strength = ((Number) arguments[1]).intValue();
-		}
+		boolean strong = true;
 		switch(method) {
 			case 0:
 				getBlock().update(this);
 				return new Object[] {(input.get(face) > 0) ? true : false};
 			case 1:
+				if(arguments.length > 1) {
+					boolean on = ((Boolean) arguments[1]);
+					strength = (on) ? 15 : 0;
+				}
+				if(arguments.length > 2) {
+					strong = ((Boolean) arguments[2]);
+				}
+				output_strong.put(face, strong);
 				output.put(face, strength);
-				isStrongOutput = strength > 0;
 				getBlock().update(this);
 				return new Object[] {};
 			case 2:
 				getBlock().update(this);
 				return new Object[] {input.get(face)};
 			case 3:
+				if(arguments.length > 1) {
+					strength = ((Number) arguments[1]).intValue();
+				}
+				if(arguments.length > 2) {
+					strong = ((Boolean) arguments[2]);
+				}
+				output_strong.put(face, strong);
 				output.put(face, strength);
-				isWeakOutput = strength > 0;
 				getBlock().update(this);
 				return new Object[] {};
 			default: 

@@ -1,7 +1,10 @@
 package de.panzercraft.CCPlus.blocks;
 
+import java.util.Random;
+
 import de.panzercraft.CCPlus.entities.PlayerDetectorPlusTileEntity;
 import de.panzercraft.CCPlus.entities.RedstoneExtenderTileEntity;
+import de.panzercraft.CCPlus.utils.BlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -9,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class RedstoneExtender extends BlockContainer {
 
@@ -98,6 +102,14 @@ public class RedstoneExtender extends BlockContainer {
         world.notifyBlocksOfNeighborChange(x, y, z - 1, this);
 	}
 	
+	private void reload(RedstoneExtenderTileEntity rete, BlockPos pos) {
+		for(EnumFacing face : EnumFacing.values()) {
+			rete.input.put(face, BlockUtils.getPoweringSideValue(rete.getWorldObj(), pos, face));
+			//System.out.println(String.format("%s: has power on side %s: %d", pos.toString(), face.name(), BlockUtils.getPoweringSideValue(rete.getWorldObj(), pos, face)));
+		}
+		//System.out.println(String.format("%s: has power: %b", pos.toString(), BlockUtils.blockIsGettingExternallyPowered(rete.getWorldObj(), pos)));
+	}
+	
 	@Override
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side) {
 		TileEntity te = world.getTileEntity(x, y, z);
@@ -114,18 +126,21 @@ public class RedstoneExtender extends BlockContainer {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if(te instanceof RedstoneExtenderTileEntity) {
 			RedstoneExtenderTileEntity rete = (RedstoneExtenderTileEntity) te;
-			for(EnumFacing face : EnumFacing.values()) {
-				rete.input.put(face, getPowerLevelInput(rete.getWorldObj(), x, y, z, face));
-			}
+			reload(rete, new BlockPos(x, y, z));
 		}
     }
+	
+	@Override
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
+		onNeighborChange(world, x, y, z, x, y, z);
+	}
 	
 	@Override
 	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if(te instanceof RedstoneExtenderTileEntity) {
 			RedstoneExtenderTileEntity rete = (RedstoneExtenderTileEntity) te;
-			return (rete.isStrongOutput) ? rete.strength : 0;
+			return (rete.output_strong.get(convertToEnumFacing(side))) ? rete.output.get(convertToEnumFacing(side)) : 0;
 		} else {
 			return 0;
 		}
@@ -135,5 +150,15 @@ public class RedstoneExtender extends BlockContainer {
 	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side) {
         return side != -1;
     }
+	
+	@Override
+	public boolean isOpaqueCube() {
+		return false;
+	}
+	
+	@Override
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
+		return true;
+	}
 	
 }

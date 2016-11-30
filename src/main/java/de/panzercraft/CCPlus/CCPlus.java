@@ -22,6 +22,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import scala.actors.threadpool.Arrays;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -45,6 +46,18 @@ public class CCPlus {
     public static final String VERSION = "0.1";
     
     public static boolean player_detector_plus_explosion_disabled = true;
+    public static boolean player_detector_plus_player_info_x_enabled = true;
+    public static boolean player_detector_plus_player_info_y_enabled = true;
+    public static boolean player_detector_plus_player_info_z_enabled = true;
+    public static boolean player_detector_plus_player_info_dim_enabled = true;
+    public static boolean player_detector_plus_player_info_flying_enabled = true;
+    public static boolean player_detector_plus_player_info_health_enabled = true;
+    public static boolean player_detector_plus_player_info_creative_enabled = true;
+    public static boolean player_detector_plus_player_info_foodLevel_enabled = true;
+    public static boolean player_detector_plus_player_info_maxHealth_enabled = true;
+    public static boolean player_detector_plus_player_info_saturationLevel_enabled = true;
+    public static String[] player_detector_plus_blacklisted_players = new String[] {};
+    public static boolean player_detector_plus_player_blacklist_enabled = false;
     
     public PlayerDetectorPlus playerdetectorplusinstance = new PlayerDetectorPlus(Material.ground);
     public RedstoneExtender redstoneextenderinstance = new RedstoneExtender(Material.ground);
@@ -53,18 +66,72 @@ public class CCPlus {
     public void preInit(FMLPreInitializationEvent event) {
     	Configuration config = new Configuration(event.getSuggestedConfigurationFile());
     	config.load();
+    	
     	Property prop = config.get("debug", "player_detector_plus_explosion_disabled", player_detector_plus_explosion_disabled);
     	prop.comment = "Disables the createExplosion function from the player detector plus which was only for testing (Default: true)";
     	player_detector_plus_explosion_disabled = prop.getBoolean(player_detector_plus_explosion_disabled);
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_info_x_enabled", player_detector_plus_player_info_x_enabled);
+    	prop.comment = "Enables the x information from the player detector plus to be received by the getPlayer method (Default: true)";
+    	player_detector_plus_player_info_x_enabled = prop.getBoolean(player_detector_plus_player_info_x_enabled);
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_info_y_enabled", player_detector_plus_player_info_y_enabled);
+    	prop.comment = "Enables the y information from the player detector plus to be received by the getPlayer method (Default: true)";
+    	player_detector_plus_player_info_y_enabled = prop.getBoolean(player_detector_plus_player_info_y_enabled);
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_info_z_enabled", player_detector_plus_player_info_z_enabled);
+    	prop.comment = "Enables the z information from the player detector plus to be received by the getPlayer method (Default: true)";
+    	player_detector_plus_player_info_z_enabled = prop.getBoolean(player_detector_plus_player_info_z_enabled);
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_info_dim_enabled", player_detector_plus_player_info_dim_enabled);
+    	prop.comment = "Enables the dimension information from the player detector plus to be received by the getPlayer method (Default: true)";
+    	player_detector_plus_player_info_dim_enabled = prop.getBoolean(player_detector_plus_player_info_dim_enabled);
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_info_flying_enabled", player_detector_plus_player_info_flying_enabled);
+    	prop.comment = "Enables the flying information from the player detector plus to be received by the getPlayer method (Default: true)";
+    	player_detector_plus_player_info_flying_enabled = prop.getBoolean(player_detector_plus_player_info_flying_enabled);
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_info_health_enabled", player_detector_plus_player_info_health_enabled);
+    	prop.comment = "Enables the health information from the player detector plus to be received by the getPlayer method (Default: true)";
+    	player_detector_plus_player_info_health_enabled = prop.getBoolean(player_detector_plus_player_info_health_enabled);
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_info_creative_enabled", player_detector_plus_player_info_creative_enabled);
+    	prop.comment = "Enables the creative information from the player detector plus to be received by the getPlayer method (Default: true)";
+    	player_detector_plus_player_info_creative_enabled = prop.getBoolean(player_detector_plus_player_info_creative_enabled);
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_info_foodLevel_enabled", player_detector_plus_player_info_foodLevel_enabled);
+    	prop.comment = "Enables the food level information from the player detector plus to be received by the getPlayer method (Default: true)";
+    	player_detector_plus_player_info_foodLevel_enabled = prop.getBoolean(player_detector_plus_player_info_foodLevel_enabled);
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_info_maxHealth_enabled", player_detector_plus_player_info_maxHealth_enabled);
+    	prop.comment = "Enables the maximum health information from the player detector plus to be received by the getPlayer method (Default: true)";
+    	player_detector_plus_player_info_maxHealth_enabled = prop.getBoolean(player_detector_plus_player_info_maxHealth_enabled);
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_info_saturationLevel_enabled", player_detector_plus_player_info_saturationLevel_enabled);
+    	prop.comment = "Enables the saturation level information from the player detector plus to be received by the getPlayer method (Default: true)";
+    	player_detector_plus_player_info_saturationLevel_enabled = prop.getBoolean(player_detector_plus_player_info_saturationLevel_enabled);
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_blacklisted_players", player_detector_plus_blacklisted_players);
+    	prop.comment = "This is the blacklist for players which are not visible for the player detector plus";
+    	player_detector_plus_blacklisted_players = prop.getStringList();
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_blacklist_enabled", player_detector_plus_player_blacklist_enabled);
+    	prop.comment = "Enables or disables the blacklist for the players (Default: false)";
+    	player_detector_plus_player_blacklist_enabled = prop.getBoolean(player_detector_plus_player_blacklist_enabled);
+    	if(player_detector_plus_blacklisted_players.length == 0) {
+    		player_detector_plus_player_blacklist_enabled = false;
+    	}
+    	
     	config.save();
     }
     
     @EventHandler
-    public void init(FMLInitializationEvent event) {/*
+    public void init(FMLInitializationEvent event) {
     	playerdetectorplusinstance.setCreativeTab(CreativeTabs.tabMisc);
     	GameRegistry.registerBlock(playerdetectorplusinstance, "de.panzercraft.block.PlayerDetectorPlus");
-    	GameRegistry.registerTileEntity(PlayerDetectorPlusTileEntity.class, "de.panzercraft.entities.PlayerDetectorPlusTileEntitry");
+    	GameRegistry.registerTileEntity(PlayerDetectorPlusTileEntity.class, "de.panzercraft.entities.PlayerDetectorPlusTileEntity");
     	LanguageRegistry.addName(playerdetectorplusinstance, "Player Detector Plus");
+    	/*
     	ComputerCraftAPI.registerPeripheralProvider(new IPeripheralProvider() {
 
 			@Override
@@ -77,17 +144,18 @@ public class CCPlus {
 				}
 			}
     		
-    	});*/
-    	redstoneextenderinstance.setCreativeTab(CreativeTabs.tabMisc);
+    	});
+    	*/
+    	redstoneextenderinstance.setCreativeTab(CreativeTabs.tabRedstone);
     	GameRegistry.registerBlock(redstoneextenderinstance, "de.panzercraft.block.RedstoneExtender");
-    	GameRegistry.registerTileEntity(RedstoneExtenderTileEntity.class, "de.panzercraft.entities.RedstoneExtenderTileEntitry");
+    	GameRegistry.registerTileEntity(RedstoneExtenderTileEntity.class, "de.panzercraft.entities.RedstoneExtenderTileEntity");
     	LanguageRegistry.addName(redstoneextenderinstance, "Redstone Extender");
     	ComputerCraftAPI.registerPeripheralProvider(new IPeripheralProvider() {
 
 			@Override
 			public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
 				TileEntity temp = world.getTileEntity(x, y, z);
-				if(temp instanceof RedstoneExtenderTileEntity) {
+				if(temp instanceof PlayerDetectorPlusTileEntity || temp instanceof RedstoneExtenderTileEntity) {
 					return (IPeripheral) temp;
 				} else {
 					return null;

@@ -27,15 +27,40 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 	
 	private HashMap<String, Object> getPlayerInfo(EntityPlayer player) {
 		HashMap<String, Object> data_player = new HashMap<String, Object>();
-		data_player.put("x", player.posX);
-		data_player.put("y", player.posY);
-		data_player.put("z", player.posZ);
-		data_player.put("dim", player.dimension);
-		data_player.put("health", player.getHealth());
-		data_player.put("creative", player.capabilities.isCreativeMode);
-		data_player.put("maxHealth", player.getMaxHealth());
-		data_player.put("foodLevel", player.getFoodStats().getFoodLevel());
-		data_player.put("saturationLevel", player.getFoodStats().getSaturationLevel());
+		if(player == null) {
+			data_player.clear();
+			return data_player;
+		}
+		if(CCPlus.player_detector_plus_player_info_x_enabled) {
+			data_player.put("x", player.posX);
+		}
+		if(CCPlus.player_detector_plus_player_info_y_enabled) {
+			data_player.put("y", player.posY);
+		}
+		if(CCPlus.player_detector_plus_player_info_z_enabled) {
+			data_player.put("z", player.posZ);
+		}
+		if(CCPlus.player_detector_plus_player_info_dim_enabled) {
+			data_player.put("dim", player.dimension);
+		}
+		if(CCPlus.player_detector_plus_player_info_flying_enabled) {
+			data_player.put("flying", player.capabilities.isFlying);
+		}
+		if(CCPlus.player_detector_plus_player_info_health_enabled) {
+			data_player.put("health", player.getHealth());
+		}
+		if(CCPlus.player_detector_plus_player_info_creative_enabled) {
+			data_player.put("creative", player.capabilities.isCreativeMode);
+		}
+		if(CCPlus.player_detector_plus_player_info_foodLevel_enabled) {
+			data_player.put("foodLevel", player.getFoodStats().getFoodLevel());
+		}
+		if(CCPlus.player_detector_plus_player_info_maxHealth_enabled) {
+			data_player.put("maxHealth", player.getMaxHealth());
+		}
+		if(CCPlus.player_detector_plus_player_info_saturationLevel_enabled) {
+			data_player.put("saturationLevel", player.getFoodStats().getSaturationLevel());
+		}
 		return data_player;
 	}
 
@@ -62,6 +87,18 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 				} else {
 					ep1 = Minecraft.getMinecraft().thePlayer;
 				}
+				if(CCPlus.player_detector_plus_player_blacklist_enabled && ep1 != null) {
+					boolean forbidden = false;
+					for(String name_ : CCPlus.player_detector_plus_blacklisted_players) {
+						if(ep1.getDisplayName().equals(name_)) {
+							forbidden = true;
+							break;
+						}
+					}
+					if(forbidden) {
+						ep1 = null;
+					}
+				}
 				return new Object[] {getPlayerInfo(ep1)};
 			case 2:
 				Object[] data = new Object[MinecraftServer.getServer().getConfigurationManager().playerEntityList.size()];
@@ -70,13 +107,23 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 					data[i] = MinecraftServer.getServer().getConfigurationManager().playerEntityList.get(i);
 					if(data[i] instanceof EntityPlayer) {
 						EntityPlayer ep2 = (EntityPlayer) data[i];
+						if(CCPlus.player_detector_plus_player_blacklist_enabled) {
+							boolean forbidden = false;
+							for(String name : CCPlus.player_detector_plus_blacklisted_players) {
+								if(ep2.getDisplayName().equals(name)) {
+									forbidden = true;
+									break;
+								}
+							}
+							if(forbidden) {
+								continue;
+							}
+						}
 						data_players.put(ep2.getDisplayName(), getPlayerInfo(ep2));
-					} else {
-						//Nothing
 					}
 				}
 				return new Object[] {data_players};
-			case 3: //
+			case 3:
 				if(CCPlus.player_detector_plus_explosion_disabled) {
 					return new Object[] {false};
 				}
@@ -93,7 +140,6 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 					return new Object[] {true};
 				}
 			default:
-					
 				return null;
 		}
 	}
