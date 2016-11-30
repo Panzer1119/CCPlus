@@ -43,7 +43,7 @@ import ibxm.Player;
 public class CCPlus {
 	
     public static final String MODID = "CCPlus";
-    public static final String VERSION = "0.1";
+    public static final String VERSION = "0.1.1_2016.11.30";
     
     public static boolean player_detector_plus_explosion_disabled = true;
     public static boolean player_detector_plus_player_info_x_enabled = true;
@@ -131,21 +131,6 @@ public class CCPlus {
     	GameRegistry.registerBlock(playerdetectorplusinstance, "de.panzercraft.block.PlayerDetectorPlus");
     	GameRegistry.registerTileEntity(PlayerDetectorPlusTileEntity.class, "de.panzercraft.entities.PlayerDetectorPlusTileEntity");
     	LanguageRegistry.addName(playerdetectorplusinstance, "Player Detector Plus");
-    	/*
-    	ComputerCraftAPI.registerPeripheralProvider(new IPeripheralProvider() {
-
-			@Override
-			public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
-				TileEntity temp = world.getTileEntity(x, y, z);
-				if(temp instanceof PlayerDetectorPlusTileEntity) {
-					return (IPeripheral) temp;
-				} else {
-					return null;
-				}
-			}
-    		
-    	});
-    	*/
     	redstoneextenderinstance.setCreativeTab(CreativeTabs.tabRedstone);
     	GameRegistry.registerBlock(redstoneextenderinstance, "de.panzercraft.block.RedstoneExtender");
     	GameRegistry.registerTileEntity(RedstoneExtenderTileEntity.class, "de.panzercraft.entities.RedstoneExtenderTileEntity");
