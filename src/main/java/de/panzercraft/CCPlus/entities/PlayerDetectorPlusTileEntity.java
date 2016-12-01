@@ -1,5 +1,7 @@
 package de.panzercraft.CCPlus.entities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 
 import dan200.computercraft.api.lua.ILuaContext;
@@ -7,6 +9,8 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import de.panzercraft.CCPlus.CCPlus;
+import de.panzercraft.CCPlus.Handler.PlayerHandler;
+import de.panzercraft.CCPlus.blocks.PlayerDetectorPlus;
 import de.panzercraft.CCPlus.utils.MathPlus;
 import de.panzercraft.CCPlus.utils.PlayerPlus;
 import net.minecraft.client.Minecraft;
@@ -58,8 +62,17 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 		if(CCPlus.player_detector_plus_player_info_maxHealth_enabled) {
 			data_player.put("maxHealth", player.getMaxHealth());
 		}
+		if(CCPlus.player_detector_plus_player_info_lifeTime_enabled) {
+			data_player.put("lifeTime", PlayerHandler.getLifeTime(player));
+		}
 		if(CCPlus.player_detector_plus_player_info_saturationLevel_enabled) {
 			data_player.put("saturationLevel", player.getFoodStats().getSaturationLevel());
+		}
+		if(CCPlus.player_detector_plus_player_info_onlineTime_enabled) {
+			data_player.put("onlineTime", PlayerHandler.getOnlineTime(player));
+		}
+		if(CCPlus.player_detector_plus_player_info_onlineTimeDimension_enabled) {
+			data_player.put("onlineTimeDimension", PlayerHandler.getOnlineTimeActualDimension(player));
 		}
 		return data_player;
 	}
@@ -71,7 +84,7 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[] {"getWorldID", "getPlayer", "getPlayers", "createExplosion"};
+		return new String[] {"getWorldID", "getPlayer", "getPlayers"/*, "createExplosion"*/, "getPlayerOnlineTimeDimension"};
 	}
 
 	@Override
@@ -124,6 +137,7 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 				}
 				return new Object[] {data_players};
 			case 3:
+				/*
 				if(CCPlus.player_detector_plus_explosion_disabled) {
 					return new Object[] {false};
 				}
@@ -139,6 +153,36 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 					world.createExplosion(exploder, explosionX, explosionY, explosionZ, explosionSize, true);
 					return new Object[] {true};
 				}
+				*/
+				if(!CCPlus.player_detector_plus_player_info_onlineTimeDimension_enabled) {
+					return new Object[] {PlayerHandler.getOnlineTimeDimension(null, 0)};
+				}
+				EntityPlayer ep3 = null;
+				int dimension = 0;
+				if(!world.isRemote) {
+					String name = (String) arguments[0];
+					ep3 = PlayerPlus.getPlayerByName(name);
+				} else {
+					ep3 = Minecraft.getMinecraft().thePlayer;
+				}
+				if(CCPlus.player_detector_plus_player_blacklist_enabled && ep3 != null) {
+					boolean forbidden = false;
+					for(String name_ : CCPlus.player_detector_plus_blacklisted_players) {
+						if(ep3.getDisplayName().equals(name_)) {
+							forbidden = true;
+							break;
+						}
+					}
+					if(forbidden) {
+						ep3 = null;
+					}
+				}
+				if(arguments.length > 1) {
+					dimension = ((Number) arguments[1]).intValue();
+				} else if(ep3 != null) {
+					dimension = ep3.dimension;
+				}
+				return new Object[] {PlayerHandler.getOnlineTimeDimension(ep3, dimension)};
 			default:
 				return null;
 		}

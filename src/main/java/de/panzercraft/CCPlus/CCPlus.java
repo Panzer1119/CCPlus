@@ -23,6 +23,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import scala.actors.threadpool.Arrays;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -33,6 +34,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
+import de.panzercraft.CCPlus.Handler.PlayerHandler;
 import de.panzercraft.CCPlus.blocks.PlayerDetectorPlus;
 import de.panzercraft.CCPlus.blocks.RedstoneExtender;
 import de.panzercraft.CCPlus.entities.PlayerDetectorPlusTileEntity;
@@ -43,7 +45,7 @@ import ibxm.Player;
 public class CCPlus {
 	
     public static final String MODID = "CCPlus";
-    public static final String VERSION = "0.1.1_2016.11.30";
+    public static final String VERSION = "0.1.1_2016.12.01";
     
     public static boolean player_detector_plus_explosion_disabled = true;
     public static boolean player_detector_plus_player_info_x_enabled = true;
@@ -55,7 +57,10 @@ public class CCPlus {
     public static boolean player_detector_plus_player_info_creative_enabled = true;
     public static boolean player_detector_plus_player_info_foodLevel_enabled = true;
     public static boolean player_detector_plus_player_info_maxHealth_enabled = true;
+    public static boolean player_detector_plus_player_info_lifeTime_enabled = true;
     public static boolean player_detector_plus_player_info_saturationLevel_enabled = true;
+    public static boolean player_detector_plus_player_info_onlineTime_enabled = true;
+    public static boolean player_detector_plus_player_info_onlineTimeDimension_enabled = true;
     public static String[] player_detector_plus_blacklisted_players = new String[] {};
     public static boolean player_detector_plus_player_blacklist_enabled = false;
     
@@ -107,9 +112,21 @@ public class CCPlus {
     	prop.comment = "Enables the maximum health information from the player detector plus to be received by the getPlayer method (Default: true)";
     	player_detector_plus_player_info_maxHealth_enabled = prop.getBoolean(player_detector_plus_player_info_maxHealth_enabled);
     	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_info_lifeTime_enabled", player_detector_plus_player_info_lifeTime_enabled);
+    	prop.comment = "Enables the life time in seconds information from the player detector plus to be received by the getPlayer method (Default: true)";
+    	player_detector_plus_player_info_lifeTime_enabled = prop.getBoolean(player_detector_plus_player_info_lifeTime_enabled);
+    	
     	prop = config.get("player_detector_plus", "player_detector_plus_player_info_saturationLevel_enabled", player_detector_plus_player_info_saturationLevel_enabled);
     	prop.comment = "Enables the saturation level information from the player detector plus to be received by the getPlayer method (Default: true)";
     	player_detector_plus_player_info_saturationLevel_enabled = prop.getBoolean(player_detector_plus_player_info_saturationLevel_enabled);
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_info_onlineTime_enabled", player_detector_plus_player_info_onlineTime_enabled);
+    	prop.comment = "Enables the online time in seconds information from the player detector plus to be received by the getPlayer method (Default: true)";
+    	player_detector_plus_player_info_onlineTime_enabled = prop.getBoolean(player_detector_plus_player_info_onlineTime_enabled);
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_info_onlineTimeDimension_enabled", player_detector_plus_player_info_onlineTimeDimension_enabled);
+    	prop.comment = "Enables the online time for the actual dimension in seconds information from the player detector plus to be received by the getPlayer method (Default: true)";
+    	player_detector_plus_player_info_onlineTimeDimension_enabled = prop.getBoolean(player_detector_plus_player_info_onlineTimeDimension_enabled);
     	
     	prop = config.get("player_detector_plus", "player_detector_plus_blacklisted_players", player_detector_plus_blacklisted_players);
     	prop.comment = "This is the blacklist for players which are not visible for the player detector plus";
@@ -123,6 +140,8 @@ public class CCPlus {
     	}
     	
     	config.save();
+    	
+    	FMLCommonHandler.instance().bus().register(new PlayerHandler());
     }
     
     @EventHandler
