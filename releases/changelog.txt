@@ -1,0 +1,12 @@
+###############################################
+Version 0.1.2
+- Improved many things
+
+###############################################
+Version 0.1.1
+- Added Redstone Extender and Player Detector Plus
+- Added config support
+
+###############################################
+Version 0.1
+- First version
