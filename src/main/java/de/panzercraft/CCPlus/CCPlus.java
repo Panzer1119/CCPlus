@@ -45,7 +45,7 @@ import ibxm.Player;
 public class CCPlus {
 	
     public static final String MODID = "CCPlus";
-    public static final String VERSION = "0.1.1_2016.12.01";
+    public static final String VERSION = "0.1.2_2016.12.01";
     
     public static boolean player_detector_plus_explosion_disabled = true;
     public static boolean player_detector_plus_player_info_x_enabled = true;
