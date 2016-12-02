@@ -8,9 +8,9 @@
   "url": "www.panzercraft.de/programmieren/Mods/1.7.10/",
   "updateUrl": "www.panzercraft.de/programmieren/Mods/1.7.10/CCPlus.jar",
   "authorList": ["Panzer1119"],
-  "credits": "pcfreak9000",
-  "logoFile": "",
+  "credits": "©2016 Panzer1119 with help from pcfreak9000",
+  "logoFile": "logo.png",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": ["ComputerCraft", "CCTurtle"]
 }
 ]

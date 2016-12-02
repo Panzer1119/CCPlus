@@ -26,6 +26,8 @@ import scala.actors.threadpool.Arrays;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -35,6 +37,7 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import de.panzercraft.CCPlus.Handler.PlayerHandler;
+import de.panzercraft.CCPlus.Proxies.CCPlusProxy;
 import de.panzercraft.CCPlus.blocks.PlayerDetectorPlus;
 import de.panzercraft.CCPlus.blocks.RedstoneExtender;
 import de.panzercraft.CCPlus.entities.PlayerDetectorPlusTileEntity;
@@ -45,7 +48,13 @@ import ibxm.Player;
 public class CCPlus {
 	
     public static final String MODID = "CCPlus";
-    public static final String VERSION = "0.1.2_2016.12.01";
+    public static final String VERSION = "0.1.2_2016.12.02";
+    
+    @Instance(value = "CCPlus")
+    public static CCPlus ccplus;
+    
+    @SidedProxy(clientSide = "de.panzercraft.CCPlus.Proxies.CCPlusClientProxy", serverSide = "de.panzercraft.CCPlus.Proxies.CCPlusProxy")
+    public static CCPlusProxy proxy;
     
     public static boolean player_detector_plus_explosion_disabled = true;
     public static boolean player_detector_plus_player_info_x_enabled = true;
@@ -146,6 +155,7 @@ public class CCPlus {
     
     @EventHandler
     public void init(FMLInitializationEvent event) {
+    	proxy.registerRenderers();
     	playerdetectorplusinstance.setCreativeTab(CreativeTabs.tabMisc);
     	GameRegistry.registerBlock(playerdetectorplusinstance, "de.panzercraft.block.PlayerDetectorPlus");
     	GameRegistry.registerTileEntity(PlayerDetectorPlusTileEntity.class, "de.panzercraft.entities.PlayerDetectorPlusTileEntity");
