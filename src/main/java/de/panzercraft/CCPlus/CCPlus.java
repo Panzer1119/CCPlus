@@ -48,7 +48,7 @@ import ibxm.Player;
 public class CCPlus {
 	
     public static final String MODID = "CCPlus";
-    public static final String VERSION = "0.1.2_2016.12.02";
+    public static final String VERSION = "0.1.3_2016.12.02";
     
     @Instance(value = "CCPlus")
     public static CCPlus ccplus;
@@ -73,6 +73,7 @@ public class CCPlus {
     public static String[] player_detector_plus_blacklisted_players = new String[] {};
     public static boolean player_detector_plus_player_blacklist_enabled = false;
     
+    //BLOCKS
     public PlayerDetectorPlus playerdetectorplusinstance = new PlayerDetectorPlus(Material.ground);
     public RedstoneExtender redstoneextenderinstance = new RedstoneExtender(Material.ground);
     
@@ -151,19 +152,23 @@ public class CCPlus {
     	config.save();
     	
     	FMLCommonHandler.instance().bus().register(new PlayerHandler());
+    	
+    	GameRegistry.registerBlock(playerdetectorplusinstance, "PlayerDetectorPlus");
+    	GameRegistry.registerTileEntity(PlayerDetectorPlusTileEntity.class, "PlayerDetectorPlusTileEntity");
+    	GameRegistry.registerBlock(redstoneextenderinstance, "RedstoneExtender");
+    	GameRegistry.registerTileEntity(RedstoneExtenderTileEntity.class, "RedstoneExtenderTileEntity");
     }
     
     @EventHandler
     public void init(FMLInitializationEvent event) {
     	proxy.registerRenderers();
-    	playerdetectorplusinstance.setCreativeTab(CreativeTabs.tabMisc);
-    	GameRegistry.registerBlock(playerdetectorplusinstance, "de.panzercraft.block.PlayerDetectorPlus");
-    	GameRegistry.registerTileEntity(PlayerDetectorPlusTileEntity.class, "de.panzercraft.entities.PlayerDetectorPlusTileEntity");
-    	LanguageRegistry.addName(playerdetectorplusinstance, "Player Detector Plus");
-    	redstoneextenderinstance.setCreativeTab(CreativeTabs.tabRedstone);
-    	GameRegistry.registerBlock(redstoneextenderinstance, "de.panzercraft.block.RedstoneExtender");
-    	GameRegistry.registerTileEntity(RedstoneExtenderTileEntity.class, "de.panzercraft.entities.RedstoneExtenderTileEntity");
-    	LanguageRegistry.addName(redstoneextenderinstance, "Redstone Extender");
+        //System.out.println("DIRT BLOCK >> "+Blocks.dirt.getUnlocalizedName());
+    	loadRecipes();
+    }
+    
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        //System.out.println(getPlayerUUID());
     	ComputerCraftAPI.registerPeripheralProvider(new IPeripheralProvider() {
 
 			@Override
@@ -177,15 +182,13 @@ public class CCPlus {
 			}
     		
     	});
-        //System.out.println("DIRT BLOCK >> "+Blocks.dirt.getUnlocalizedName());
     }
     
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        //System.out.println(getPlayerUUID());
+    private void loadRecipes() {
+    	
     }
     
-    public UUID getPlayerUUID() {
+    public static UUID getPlayerUUID() {
         try {
         	Minecraft minecraft = Minecraft.getMinecraft();
             try {
