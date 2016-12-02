@@ -4,6 +4,8 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.annotation.Nullable;
 
@@ -23,7 +25,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import scala.actors.threadpool.Arrays;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -43,6 +44,7 @@ import de.panzercraft.CCPlus.blocks.PlayerDetectorPlus;
 import de.panzercraft.CCPlus.blocks.RedstoneExtender;
 import de.panzercraft.CCPlus.entities.PlayerDetectorPlusTileEntity;
 import de.panzercraft.CCPlus.entities.RedstoneExtenderTileEntity;
+import de.panzercraft.CCPlus.threads.UpdaterThread;
 import ibxm.Player;
 
 @Mod(modid = CCPlus.MODID, version = CCPlus.VERSION, dependencies = "required-after:ComputerCraft;after:CCTurtle")
@@ -56,6 +58,8 @@ public class CCPlus {
     
     @SidedProxy(clientSide = "de.panzercraft.CCPlus.Proxies.CCPlusClientProxy", serverSide = "de.panzercraft.CCPlus.Proxies.CCPlusProxy")
     public static CCPlusProxy proxy;
+    
+    public static final ExecutorService executor = Executors.newFixedThreadPool(10);
     
     public static boolean player_detector_plus_explosion_disabled = true;
     public static boolean player_detector_plus_player_info_x_enabled = true;
@@ -77,6 +81,8 @@ public class CCPlus {
     //BLOCKS
     public PlayerDetectorPlus playerdetectorplusinstance = new PlayerDetectorPlus(Material.ground);
     public RedstoneExtender redstoneextenderinstance = new RedstoneExtender(Material.ground);
+    
+    public static Thread updater = new UpdaterThread();
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -183,6 +189,7 @@ public class CCPlus {
 			}
     		
     	});
+    	executor.execute(updater);
     }
     
     private void loadRecipes() {

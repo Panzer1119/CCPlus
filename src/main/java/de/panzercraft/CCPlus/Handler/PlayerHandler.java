@@ -9,7 +9,10 @@ import java.util.HashMap;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import de.panzercraft.CCPlus.blocks.BlockPosExact;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
 public class PlayerHandler {
@@ -17,6 +20,7 @@ public class PlayerHandler {
 	public static final HashMap<EntityPlayer, Instant> logged_in_times = new HashMap<EntityPlayer, Instant>();
 	public static final HashMap<EntityPlayer, HashMap<Integer, Instant>> logged_in_times_dimensions = new HashMap<EntityPlayer, HashMap<Integer, Instant>>();
 	public static final HashMap<EntityPlayer, Instant> respawned_times = new HashMap<EntityPlayer, Instant>();
+	public static final HashMap<EntityPlayer, HashMap<Instant, BlockPosExact>> hawk_eye = new HashMap<EntityPlayer, HashMap<Instant, BlockPosExact>>();
 	
 	@SubscribeEvent
 	public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
@@ -61,6 +65,19 @@ public class PlayerHandler {
 		EntityPlayer player = event.player;
 		respawned_times.put(player, respawned);
 		System.out.println(String.format("Player \"%s\" respawned (%s)", player.getDisplayName(), LocalDateTime.ofInstant(respawned, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))));
+	}
+	
+	public static EntityPlayer[] getPlayers() {
+		EntityPlayer[] players = new EntityPlayer[MinecraftServer.getServer().getConfigurationManager().playerEntityList.size()];
+		int i = 0;
+		for(Object o : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+			if(o instanceof EntityPlayer) {
+				EntityPlayer player = (EntityPlayer) o;
+				players[i] = player;
+				i++;
+			}
+		}
+		return players;
 	}
 	
 	public static long getOnlineTime(EntityPlayer player) {
@@ -112,6 +129,22 @@ public class PlayerHandler {
 			return life_time;
 		} else {
 			return -1;
+		}
+	}
+	
+	public static void logPlayer(EntityPlayer player, Instant now) {
+		if(player == null || now == null) {
+			return;
+		}
+		final HashMap<Instant, BlockPosExact> positions = (hawk_eye.get(player) != null) ? hawk_eye.get(player) : new HashMap<Instant, BlockPosExact>();
+		positions.put(now, new BlockPosExact(player.posX, player.posY, player.posZ));
+		hawk_eye.put(player, positions);
+	}
+	
+	public static void logPlayers(Instant now) {
+		EntityPlayer[] players = getPlayers();
+		for(EntityPlayer player : players) {
+			logPlayer(player, now);
 		}
 	}
 	
