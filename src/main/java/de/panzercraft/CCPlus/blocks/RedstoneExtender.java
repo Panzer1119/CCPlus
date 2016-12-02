@@ -8,6 +8,7 @@ import de.panzercraft.CCPlus.utils.BlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
@@ -18,6 +19,10 @@ public class RedstoneExtender extends BlockContainer {
 
 	public RedstoneExtender(Material blockMaterial) {
 		super(blockMaterial);
+		setBlockName("RedstoneExtender");
+		setBlockTextureName("CCPlus:RedstoneExtender");
+		setCreativeTab(CreativeTabs.tabRedstone);
+		setStepSound(Block.soundTypePiston);
 	}
 
 	@Override

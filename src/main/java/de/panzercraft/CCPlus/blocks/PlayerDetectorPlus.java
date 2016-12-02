@@ -22,6 +22,7 @@ public class PlayerDetectorPlus extends BlockContainer {
 	
 	public PlayerDetectorPlus(Material blockMaterial) {
 		super(blockMaterial);
+		setBlockName("PlayerDetectorPlus");
 		setBlockTextureName("CCPlus:PlayerDetectorPlus");
 		setCreativeTab(CreativeTabs.tabRedstone);
 		setStepSound(Block.soundTypePiston);

@@ -14,6 +14,7 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -185,7 +186,22 @@ public class CCPlus {
     }
     
     private void loadRecipes() {
-    	
+    	GameRegistry.addShapedRecipe(
+    			new ItemStack(playerdetectorplusinstance, 1), 
+    			"XYX",
+    			"YZY",
+    			"XYX",
+    			Character.valueOf('X'), Blocks.stone, 
+    			Character.valueOf('Y'), Items.ender_eye, 
+    			Character.valueOf('Z'), Items.redstone);
+    	GameRegistry.addShapedRecipe(
+    			new ItemStack(redstoneextenderinstance, 1), 
+    			"XYX",
+    			"YZY",
+    			"XYX",
+    			Character.valueOf('X'), Blocks.stone, 
+    			Character.valueOf('Y'), Blocks.redstone_torch, 
+    			Character.valueOf('Z'), Items.redstone);
     }
     
     public static UUID getPlayerUUID() {
