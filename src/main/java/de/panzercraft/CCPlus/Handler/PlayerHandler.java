@@ -10,6 +10,7 @@ import java.util.HashMap;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import de.panzercraft.CCPlus.blocks.BlockPosExact;
+import de.panzercraft.CCPlus.utils.PlayerPlus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -26,11 +27,12 @@ public class PlayerHandler {
 	public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
 		Instant logged_in = Instant.now();
 		EntityPlayer player = event.player;
+		boolean isOP = PlayerPlus.isOperator(player);
 		logged_in_times.put(player, logged_in);
 		respawned_times.put(player, logged_in);
 		logged_in_times_dimensions.put(player, new HashMap<Integer, Instant>());
 		logged_in_times_dimensions.get(player).put(player.dimension, logged_in);
-		System.out.println(String.format("Player \"%s\" logged in (%s)", player.getDisplayName(), LocalDateTime.ofInstant(logged_in, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))));
+		System.out.println(String.format("Player \"%s\" logged in (%s) Operator: %b", player.getDisplayName(), LocalDateTime.ofInstant(logged_in, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")), isOP));
 	}
 	
 	@SubscribeEvent

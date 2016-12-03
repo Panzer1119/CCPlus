@@ -18,5 +18,13 @@ public class PlayerPlus {
 		}
 		return ep;
 	}
+	
+	public static boolean isOperator(EntityPlayer player) {
+		if(player == null) {
+			return false;
+		} else {
+			return MinecraftServer.getServer().getConfigurationManager().func_152596_g(player.getGameProfile());
+		}
+	}
 
 }

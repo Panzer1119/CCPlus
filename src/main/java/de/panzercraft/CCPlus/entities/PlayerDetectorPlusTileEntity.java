@@ -65,6 +65,9 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 		if(CCPlus.player_detector_plus_player_info_lifeTime_enabled) {
 			data_player.put("lifeTime", PlayerHandler.getLifeTime(player));
 		}
+		if(CCPlus.player_detector_plus_player_info_isOperator_enabled) {
+			data_player.put("isOperator", PlayerPlus.isOperator(player));
+		}
 		if(CCPlus.player_detector_plus_player_info_saturationLevel_enabled) {
 			data_player.put("saturationLevel", player.getFoodStats().getSaturationLevel());
 		}

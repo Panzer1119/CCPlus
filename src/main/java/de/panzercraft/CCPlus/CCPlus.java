@@ -76,12 +76,15 @@ public class CCPlus {
     public static boolean player_detector_plus_player_info_foodLevel_enabled = true;
     public static boolean player_detector_plus_player_info_maxHealth_enabled = true;
     public static boolean player_detector_plus_player_info_lifeTime_enabled = true;
+    public static boolean player_detector_plus_player_info_isOperator_enabled = true;
     public static boolean player_detector_plus_player_info_saturationLevel_enabled = true;
     public static boolean player_detector_plus_player_info_onlineTime_enabled = true;
     public static boolean player_detector_plus_player_info_onlineTimeDimension_enabled = true;
     public static String[] player_detector_plus_blacklisted_players = new String[] {};
     public static boolean player_detector_plus_player_blacklist_enabled = false;
     public static int block_analyzer_range = 100;
+    
+    public static File config_file = null;
     
     //BLOCKS
     public final PlayerDetectorPlus playerdetectorplusinstance = new PlayerDetectorPlus(Material.ground);
@@ -92,7 +95,8 @@ public class CCPlus {
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-    	Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+    	config_file = event.getSuggestedConfigurationFile();
+    	Configuration config = new Configuration(config_file);
     	config.load();
     	
     	Property prop = config.get("debug", "debug_enabled", debug_enabled);
@@ -146,6 +150,10 @@ public class CCPlus {
     	prop = config.get("player_detector_plus", "player_detector_plus_player_info_lifeTime_enabled", player_detector_plus_player_info_lifeTime_enabled);
     	prop.comment = "Enables the life time in seconds information from the player detector plus to be received by the getPlayer method (Default: true)";
     	player_detector_plus_player_info_lifeTime_enabled = prop.getBoolean(player_detector_plus_player_info_lifeTime_enabled);
+    	
+    	prop = config.get("player_detector_plus", "player_detector_plus_player_info_isOperator_enabled", player_detector_plus_player_info_isOperator_enabled);
+    	prop.comment = "Enables the operator information from the player detector plus to be received by the getPlayer method (Default: true)";
+    	player_detector_plus_player_info_isOperator_enabled = prop.getBoolean(player_detector_plus_player_info_isOperator_enabled);
     	
     	prop = config.get("player_detector_plus", "player_detector_plus_player_info_saturationLevel_enabled", player_detector_plus_player_info_saturationLevel_enabled);
     	prop.comment = "Enables the saturation level information from the player detector plus to be received by the getPlayer method (Default: true)";
