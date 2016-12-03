@@ -138,7 +138,7 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 				return new Object[] {data_players};
 			case 3:
 				/*
-				if(CCPlus.player_detector_plus_explosion_disabled) {
+				if(!CCPlus.debug_enabled || CCPlus.player_detector_plus_explosion_disabled) {
 					return new Object[] {false};
 				}
 				Double explosionX = ((Number) arguments[0]).doubleValue();

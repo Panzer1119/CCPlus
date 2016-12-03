@@ -3,6 +3,7 @@ package de.panzercraft.CCPlus.threads;
 import java.time.Duration;
 import java.time.Instant;
 
+import de.panzercraft.CCPlus.CCPlus;
 import de.panzercraft.CCPlus.Handler.PlayerHandler;
 import net.minecraft.client.Minecraft;
 
@@ -18,9 +19,13 @@ public class UpdaterThread extends Thread {
 		while(run) {
 			final Instant now = Instant.now();
 			final Duration duration = Duration.between(started, now);
-			if(duration.toMillis() % delay_coord_logger == 0) {
-				if(Minecraft.getMinecraft().theWorld != null) {
-					PlayerHandler.logPlayers(now);
+			if(CCPlus.debug_enabled) {
+				if(CCPlus.debug_hawk_eye_enabled) {
+					if(duration.toMillis() % delay_coord_logger == 0) {
+						if(Minecraft.getMinecraft().theWorld != null) {
+							PlayerHandler.logPlayers(now);
+						}
+					}
 				}
 			}
 			try {

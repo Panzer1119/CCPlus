@@ -51,7 +51,7 @@ import ibxm.Player;
 public class CCPlus {
 	
     public static final String MODID = "CCPlus";
-    public static final String VERSION = "0.1.3_2016.12.02";
+    public static final String VERSION = "0.1.4_2016.12.03";
     
     @Instance(value = "CCPlus")
     public static CCPlus ccplus;
@@ -61,6 +61,8 @@ public class CCPlus {
     
     public static final ExecutorService executor = Executors.newFixedThreadPool(10);
     
+    public static boolean debug_enabled = false;
+    public static boolean debug_hawk_eye_enabled = false;
     public static boolean player_detector_plus_explosion_disabled = true;
     public static boolean player_detector_plus_player_info_x_enabled = true;
     public static boolean player_detector_plus_player_info_y_enabled = true;
@@ -89,7 +91,15 @@ public class CCPlus {
     	Configuration config = new Configuration(event.getSuggestedConfigurationFile());
     	config.load();
     	
-    	Property prop = config.get("debug", "player_detector_plus_explosion_disabled", player_detector_plus_explosion_disabled);
+    	Property prop = config.get("debug", "debug_enabled", debug_enabled);
+    	prop.comment = "Enables or disables all debug functions (Default: false)";
+    	debug_enabled = prop.getBoolean(debug_enabled);
+    	
+    	prop = config.get("debug", "debug_hawk_eye_enabled", debug_hawk_eye_enabled);
+    	prop.comment = "Enables or disables the hawk_eye like player position logger function (Default: false)";
+    	debug_hawk_eye_enabled = prop.getBoolean(debug_hawk_eye_enabled);
+    	
+    	prop = config.get("debug", "player_detector_plus_explosion_disabled", player_detector_plus_explosion_disabled);
     	prop.comment = "Disables the createExplosion function from the player detector plus which was only for testing (Default: true)";
     	player_detector_plus_explosion_disabled = prop.getBoolean(player_detector_plus_explosion_disabled);
     	
