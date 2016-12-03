@@ -1,4 +1,21 @@
 ###############################################
+Version 0.1.4
+- Added debug mode in the config to disable all
+  debug features together
+- HawkEye can be disabled/enabled through the config
+- Added new block (cc support) the block analyzer
+  which can analyze a block in the world within a
+  configureable range
+- Block analyzer can work over dimensions this can
+  be activated/deactivated in the config
+
+###############################################
+Version 0.1.3
+- Added proxies
+- Added 2 languages (german and english)
+- Added test textures for the 2 blocks
+
+###############################################
 Version 0.1.2
 - Improved many things
 
