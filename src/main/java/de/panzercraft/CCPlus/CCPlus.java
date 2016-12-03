@@ -82,6 +82,7 @@ public class CCPlus {
     public static boolean player_detector_plus_player_info_onlineTimeDimension_enabled = true;
     public static String[] player_detector_plus_blacklisted_players = new String[] {};
     public static boolean player_detector_plus_player_blacklist_enabled = false;
+    public static boolean block_analyzer_enable_dimensional_analysis = false;
     public static int block_analyzer_range = 100;
     
     public static File config_file = null;
@@ -178,8 +179,12 @@ public class CCPlus {
     		player_detector_plus_player_blacklist_enabled = false;
     	}
     	
+    	prop = config.get("block_analyzer", "block_analyzer_enable_dimensional_analysis", block_analyzer_enable_dimensional_analysis);
+    	prop.comment = "Enables the analysis over any dimension (Default: false)";
+    	block_analyzer_enable_dimensional_analysis = prop.getBoolean(block_analyzer_enable_dimensional_analysis);
+    	
     	prop = config.get("block_analyzer", "block_analyzer_range", block_analyzer_range);
-    	prop.comment = "Sets the range/radius of the block analyzer (Default: 100)";
+    	prop.comment = "Sets the range/radius of the block analyzer (-1 for infinite a range) (Default: 100)";
     	block_analyzer_range = prop.getInt(block_analyzer_range);
     	
     	config.save();

@@ -12,6 +12,7 @@ import de.panzercraft.CCPlus.CCPlus;
 import de.panzercraft.CCPlus.utils.MathPlus;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -42,16 +43,21 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 				int x = ((Number) arguments[0]).intValue();
 				int y = ((Number) arguments[1]).intValue();
 				int z = ((Number) arguments[2]).intValue();
+				World world_2 = world;
 				int dim = world.provider.dimensionId;
 				if(arguments.length > 3) {
 					dim = ((Number) arguments[3]).intValue();
+					world_2 = MinecraftServer.getServer().worldServerForDimension(dim);
 				}
-				if(dim == world.provider.dimensionId) {
+				if(CCPlus.block_analyzer_enable_dimensional_analysis || dim == world.provider.dimensionId) {
 					double distance = MathPlus.distanceXYZ(this.xCoord, this.yCoord, this.zCoord, x, y, z);
-					if(distance > CCPlus.block_analyzer_range) {
+					if(CCPlus.block_analyzer_range != -1 && distance > CCPlus.block_analyzer_range) {
 						return new Object[] {"Out of range"};
 					} else {
-						Block block = world.getBlock(x, y, z);
+						if(CCPlus.block_analyzer_enable_dimensional_analysis && dim != world.provider.dimensionId && world_2 == null) {
+							return new Object[] {"Dimension does not exist"};
+						}
+						Block block = world_2.getBlock(x, y, z);
 						if(block != null) {
 							data.put("unlocalizedName", block.getUnlocalizedName());
 							data.put("localizedName", block.getLocalizedName());
@@ -62,7 +68,7 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 						}
 					}
 				} else {
-					data.clear();
+					return new Object[] {"Wrong dimension"};
 				}
 				return new Object[] {data};
 			default:
