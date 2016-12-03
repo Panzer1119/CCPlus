@@ -1,10 +1,19 @@
 package de.panzercraft.CCPlus.entities;
 
+import java.util.HashMap;
+
+import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import de.panzercraft.CCPlus.CCPlus;
+import de.panzercraft.CCPlus.utils.MathPlus;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
@@ -22,12 +31,40 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[] {}; 
+		return new String[] {"getBlock"}; 
 	}
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 		switch(method) {
+			case 0:
+				HashMap<String, Object> data = new HashMap<String, Object>();
+				int x = ((Number) arguments[0]).intValue();
+				int y = ((Number) arguments[1]).intValue();
+				int z = ((Number) arguments[2]).intValue();
+				int dim = world.provider.dimensionId;
+				if(arguments.length > 3) {
+					dim = ((Number) arguments[3]).intValue();
+				}
+				if(dim == world.provider.dimensionId) {
+					double distance = MathPlus.distanceXYZ(this.xCoord, this.yCoord, this.zCoord, x, y, z);
+					if(distance > CCPlus.block_analyzer_range) {
+						return new Object[] {"Out of range"};
+					} else {
+						Block block = world.getBlock(x, y, z);
+						if(block != null) {
+							data.put("unlocalizedName", block.getUnlocalizedName());
+							data.put("localizedName", block.getLocalizedName());
+							data.put("id", block.getIdFromBlock(block));
+							data.put("name", new ItemStack(block, 1).getDisplayName());
+						} else {
+							data.clear();
+						}
+					}
+				} else {
+					data.clear();
+				}
+				return new Object[] {data};
 			default:
 				return new Object[] {};
 		}
