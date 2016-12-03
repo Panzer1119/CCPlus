@@ -40,8 +40,10 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import de.panzercraft.CCPlus.Handler.PlayerHandler;
 import de.panzercraft.CCPlus.Proxies.CCPlusProxy;
+import de.panzercraft.CCPlus.blocks.BlockAnalyzer;
 import de.panzercraft.CCPlus.blocks.PlayerDetectorPlus;
 import de.panzercraft.CCPlus.blocks.RedstoneExtender;
+import de.panzercraft.CCPlus.entities.BlockAnalyzerTileEntity;
 import de.panzercraft.CCPlus.entities.PlayerDetectorPlusTileEntity;
 import de.panzercraft.CCPlus.entities.RedstoneExtenderTileEntity;
 import de.panzercraft.CCPlus.threads.UpdaterThread;
@@ -79,10 +81,12 @@ public class CCPlus {
     public static boolean player_detector_plus_player_info_onlineTimeDimension_enabled = true;
     public static String[] player_detector_plus_blacklisted_players = new String[] {};
     public static boolean player_detector_plus_player_blacklist_enabled = false;
+    public static int block_analyzer_range = 100;
     
     //BLOCKS
-    public PlayerDetectorPlus playerdetectorplusinstance = new PlayerDetectorPlus(Material.ground);
-    public RedstoneExtender redstoneextenderinstance = new RedstoneExtender(Material.ground);
+    public final PlayerDetectorPlus playerdetectorplusinstance = new PlayerDetectorPlus(Material.ground);
+    public final RedstoneExtender redstoneextenderinstance = new RedstoneExtender(Material.ground);
+    public final BlockAnalyzer blockanalyzerinstance = new BlockAnalyzer(Material.ground);
     
     public static Thread updater = new UpdaterThread();
     
@@ -166,6 +170,10 @@ public class CCPlus {
     		player_detector_plus_player_blacklist_enabled = false;
     	}
     	
+    	prop = config.get("block_analyzer", "block_analyzer_range", block_analyzer_range);
+    	prop.comment = "Sets the range/radius of the block analyzer (Default: 100)";
+    	block_analyzer_range = prop.getInt(block_analyzer_range);
+    	
     	config.save();
     	
     	FMLCommonHandler.instance().bus().register(new PlayerHandler());
@@ -174,6 +182,8 @@ public class CCPlus {
     	GameRegistry.registerTileEntity(PlayerDetectorPlusTileEntity.class, "PlayerDetectorPlusTileEntity");
     	GameRegistry.registerBlock(redstoneextenderinstance, "RedstoneExtender");
     	GameRegistry.registerTileEntity(RedstoneExtenderTileEntity.class, "RedstoneExtenderTileEntity");
+    	GameRegistry.registerBlock(blockanalyzerinstance, "BlockAnalyzer");
+    	GameRegistry.registerTileEntity(BlockAnalyzerTileEntity.class, "BlockAnalyzerTileEntity");
     }
     
     @EventHandler
@@ -191,7 +201,7 @@ public class CCPlus {
 			@Override
 			public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
 				TileEntity temp = world.getTileEntity(x, y, z);
-				if(temp instanceof PlayerDetectorPlusTileEntity || temp instanceof RedstoneExtenderTileEntity) {
+				if(temp instanceof PlayerDetectorPlusTileEntity || temp instanceof RedstoneExtenderTileEntity || temp instanceof BlockAnalyzerTileEntity) {
 					return (IPeripheral) temp;
 				} else {
 					return null;

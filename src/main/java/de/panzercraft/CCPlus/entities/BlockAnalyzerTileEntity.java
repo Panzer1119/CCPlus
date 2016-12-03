@@ -17,7 +17,7 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 
 	@Override
 	public String getType() {
-		return "block_anaylzer";
+		return "block_analyzer";
 	}
 
 	@Override
