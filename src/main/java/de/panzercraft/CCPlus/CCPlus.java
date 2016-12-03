@@ -191,12 +191,7 @@ public class CCPlus {
     	
     	FMLCommonHandler.instance().bus().register(new PlayerHandler());
     	
-    	GameRegistry.registerBlock(playerdetectorplusinstance, "PlayerDetectorPlus");
-    	GameRegistry.registerTileEntity(PlayerDetectorPlusTileEntity.class, "PlayerDetectorPlusTileEntity");
-    	GameRegistry.registerBlock(redstoneextenderinstance, "RedstoneExtender");
-    	GameRegistry.registerTileEntity(RedstoneExtenderTileEntity.class, "RedstoneExtenderTileEntity");
-    	GameRegistry.registerBlock(blockanalyzerinstance, "BlockAnalyzer");
-    	GameRegistry.registerTileEntity(BlockAnalyzerTileEntity.class, "BlockAnalyzerTileEntity");
+    	registerAnything();
     }
     
     @EventHandler
@@ -242,6 +237,15 @@ public class CCPlus {
     			Character.valueOf('X'), Blocks.stone, 
     			Character.valueOf('Y'), Blocks.redstone_torch, 
     			Character.valueOf('Z'), Items.redstone);
+    }
+    
+    private void registerAnything() {
+    	GameRegistry.registerBlock(playerdetectorplusinstance, "PlayerDetectorPlus");
+    	GameRegistry.registerTileEntity(PlayerDetectorPlusTileEntity.class, "PlayerDetectorPlusTileEntity");
+    	GameRegistry.registerBlock(redstoneextenderinstance, "RedstoneExtender");
+    	GameRegistry.registerTileEntity(RedstoneExtenderTileEntity.class, "RedstoneExtenderTileEntity");
+    	GameRegistry.registerBlock(blockanalyzerinstance, "BlockAnalyzer");
+    	GameRegistry.registerTileEntity(BlockAnalyzerTileEntity.class, "BlockAnalyzerTileEntity");
     }
     
     public static UUID getPlayerUUID() {
