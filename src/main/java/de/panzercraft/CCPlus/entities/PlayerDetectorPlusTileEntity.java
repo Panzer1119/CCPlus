@@ -114,26 +114,22 @@ public class PlayerDetectorPlusTileEntity extends TileEntity implements IPeriphe
 				}
 				return new Object[] {getPlayerInfo(ep1)};
 			case 2:
-				Object[] data = new Object[MinecraftServer.getServer().getConfigurationManager().playerEntityList.size()];
+				EntityPlayer[] players = PlayerHandler.getPlayers();
 				HashMap<String, HashMap<String, Object>> data_players = new HashMap<String, HashMap<String, Object>>();
-				for(int i = 0; i < data.length; i++) {
-					data[i] = MinecraftServer.getServer().getConfigurationManager().playerEntityList.get(i);
-					if(data[i] instanceof EntityPlayer) {
-						EntityPlayer ep2 = (EntityPlayer) data[i];
-						if(CCPlus.player_detector_plus_player_blacklist_enabled) {
-							boolean forbidden = false;
-							for(String name : CCPlus.player_detector_plus_blacklisted_players) {
-								if(ep2.getDisplayName().equals(name)) {
-									forbidden = true;
-									break;
-								}
-							}
-							if(forbidden) {
-								continue;
+				for(EntityPlayer player : players) {
+					if(CCPlus.player_detector_plus_player_blacklist_enabled) {
+						boolean forbidden = false;
+						for(String name : CCPlus.player_detector_plus_blacklisted_players) {
+							if(player.getDisplayName().equals(name)) {
+								forbidden = true;
+								break;
 							}
 						}
-						data_players.put(ep2.getDisplayName(), getPlayerInfo(ep2));
+						if(forbidden) {
+							continue;
+						}
 					}
+					data_players.put(player.getDisplayName(), getPlayerInfo(player));
 				}
 				return new Object[] {data_players};
 			case 3:

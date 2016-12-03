@@ -68,7 +68,7 @@ public class PlayerHandler {
 	}
 	
 	public static EntityPlayer[] getPlayers() {
-		EntityPlayer[] players = new EntityPlayer[MinecraftServer.getServer().getConfigurationManager().playerEntityList.size()];
+		EntityPlayer[] players = new EntityPlayer[MinecraftServer.getServer().getConfigurationManager().getCurrentPlayerCount()];
 		int i = 0;
 		for(Object o : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
 			if(o instanceof EntityPlayer) {

@@ -53,15 +53,11 @@ public class RedstoneExtenderTileEntity extends TileEntity implements IPeriphera
 		//Every setRedstone function can have up to 3 parameters the first has to be the side which gets accessed, the second parameter should be the strength and the third parameter
 		//is the option to set if the output is strong or not
 	}
-	
-	public EnumFacing convertToEnumFacing(String side) {
-		return EnumFacing.valueOf(side);
-	}
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 		String side = ((String) arguments[0]);
-		EnumFacing face = convertToEnumFacing(side);
+		EnumFacing face = EnumFacing.valueOf(side);
 		int strength = 0;
 		boolean strong = true;
 		switch(method) {
