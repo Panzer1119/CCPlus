@@ -68,7 +68,7 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 						}
 					}
 				} else {
-					return new Object[] {"Wrong dimension"};
+					return new Object[] {"Multidimensional block analysis isnt supported"};
 				}
 				return new Object[] {data};
 			default:
