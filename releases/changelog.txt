@@ -1,4 +1,19 @@
 ###############################################
+Version 0.1.5
+- Added a WorldGenerator
+- Added a creative tab for CCPlus
+- Added a texture to the block analyzer
+- Added new building block dendstone which
+  ist very expenisve but has a high resistance
+- Added 2 achievements
+- Added own achievement page
+- Added new peripheral the chest manager
+- It has 3 methods, one to check if a chest is 
+  present, another one to get the inventory size
+  and a third one to get the itemstack in the
+  a slot
+
+###############################################
 Version 0.1.4
 - Added debug mode in the config to disable all
   debug features together
