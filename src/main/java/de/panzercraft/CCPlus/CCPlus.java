@@ -165,7 +165,7 @@ public class CCPlus {
 			@Override
 			public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
 				TileEntity temp = world.getTileEntity(x, y, z);
-				if(temp instanceof PlayerDetectorPlusTileEntity || temp instanceof RedstoneExtenderTileEntity || temp instanceof BlockAnalyzerTileEntity) {
+				if(temp instanceof PlayerDetectorPlusTileEntity || temp instanceof RedstoneExtenderTileEntity || temp instanceof BlockAnalyzerTileEntity || temp instanceof ChestManagerTileEntity) {
 					return (IPeripheral) temp;
 				} else {
 					return null;
