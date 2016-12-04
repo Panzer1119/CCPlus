@@ -15,7 +15,7 @@ public class Dendstone extends Block {
 		setStepSound(Block.soundTypeStone);
 		setResistance(1000F);
 		setHardness(20F);
-		setLightLevel(0.1F);
+		setLightLevel(0.4F);
 		//setHarvestLevel(, 3);
 	}
 
