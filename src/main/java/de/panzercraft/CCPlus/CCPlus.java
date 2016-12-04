@@ -46,6 +46,7 @@ import de.panzercraft.CCPlus.blocks.RedstoneExtender;
 import de.panzercraft.CCPlus.entities.BlockAnalyzerTileEntity;
 import de.panzercraft.CCPlus.entities.PlayerDetectorPlusTileEntity;
 import de.panzercraft.CCPlus.entities.RedstoneExtenderTileEntity;
+import de.panzercraft.CCPlus.generator.WorldGeneratorCCPlus;
 import de.panzercraft.CCPlus.threads.UpdaterThread;
 import ibxm.Player;
 
@@ -88,15 +89,78 @@ public class CCPlus {
     public static File config_file = null;
     
     //BLOCKS
-    public final PlayerDetectorPlus playerdetectorplusinstance = new PlayerDetectorPlus(Material.ground);
-    public final RedstoneExtender redstoneextenderinstance = new RedstoneExtender(Material.ground);
-    public final BlockAnalyzer blockanalyzerinstance = new BlockAnalyzer(Material.ground);
+    public static final PlayerDetectorPlus playerdetectorplusinstance = new PlayerDetectorPlus(Material.ground);
+    public static final RedstoneExtender redstoneextenderinstance = new RedstoneExtender(Material.ground);
+    public static final BlockAnalyzer blockanalyzerinstance = new BlockAnalyzer(Material.ground);
     
     public static Thread updater = new UpdaterThread();
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
     	config_file = event.getSuggestedConfigurationFile();
+    	loadConfig();
+    	
+    	FMLCommonHandler.instance().bus().register(new PlayerHandler());
+    	
+    	registerAnything();
+    }
+    
+    @EventHandler
+    public void init(FMLInitializationEvent event) {
+    	proxy.registerRenderers();
+        //System.out.println("DIRT BLOCK >> "+Blocks.dirt.getUnlocalizedName());
+    	loadRecipes();
+    }
+    
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        //System.out.println(getPlayerUUID());
+    	GameRegistry.registerWorldGenerator(new WorldGeneratorCCPlus(), 5);
+    	ComputerCraftAPI.registerPeripheralProvider(new IPeripheralProvider() {
+
+			@Override
+			public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
+				TileEntity temp = world.getTileEntity(x, y, z);
+				if(temp instanceof PlayerDetectorPlusTileEntity || temp instanceof RedstoneExtenderTileEntity || temp instanceof BlockAnalyzerTileEntity) {
+					return (IPeripheral) temp;
+				} else {
+					return null;
+				}
+			}
+    		
+    	});
+    	executor.execute(updater);
+    }
+    
+    private void loadRecipes() {
+    	GameRegistry.addShapedRecipe(
+    			new ItemStack(playerdetectorplusinstance, 1), 
+    			"XYX",
+    			"YZY",
+    			"XYX",
+    			Character.valueOf('X'), Blocks.stone, 
+    			Character.valueOf('Y'), Items.ender_eye, 
+    			Character.valueOf('Z'), Items.redstone);
+    	GameRegistry.addShapedRecipe(
+    			new ItemStack(redstoneextenderinstance, 1), 
+    			"XYX",
+    			"YZY",
+    			"XYX",
+    			Character.valueOf('X'), Blocks.stone, 
+    			Character.valueOf('Y'), Blocks.redstone_torch, 
+    			Character.valueOf('Z'), Items.redstone);
+    }
+    
+    private void registerAnything() {
+    	GameRegistry.registerBlock(playerdetectorplusinstance, "PlayerDetectorPlus");
+    	GameRegistry.registerTileEntity(PlayerDetectorPlusTileEntity.class, "PlayerDetectorPlusTileEntity");
+    	GameRegistry.registerBlock(redstoneextenderinstance, "RedstoneExtender");
+    	GameRegistry.registerTileEntity(RedstoneExtenderTileEntity.class, "RedstoneExtenderTileEntity");
+    	GameRegistry.registerBlock(blockanalyzerinstance, "BlockAnalyzer");
+    	GameRegistry.registerTileEntity(BlockAnalyzerTileEntity.class, "BlockAnalyzerTileEntity");
+    }
+    
+    private void loadConfig() {
     	Configuration config = new Configuration(config_file);
     	config.load();
     	
@@ -188,64 +252,6 @@ public class CCPlus {
     	block_analyzer_range = prop.getInt(block_analyzer_range);
     	
     	config.save();
-    	
-    	FMLCommonHandler.instance().bus().register(new PlayerHandler());
-    	
-    	registerAnything();
-    }
-    
-    @EventHandler
-    public void init(FMLInitializationEvent event) {
-    	proxy.registerRenderers();
-        //System.out.println("DIRT BLOCK >> "+Blocks.dirt.getUnlocalizedName());
-    	loadRecipes();
-    }
-    
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        //System.out.println(getPlayerUUID());
-    	ComputerCraftAPI.registerPeripheralProvider(new IPeripheralProvider() {
-
-			@Override
-			public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
-				TileEntity temp = world.getTileEntity(x, y, z);
-				if(temp instanceof PlayerDetectorPlusTileEntity || temp instanceof RedstoneExtenderTileEntity || temp instanceof BlockAnalyzerTileEntity) {
-					return (IPeripheral) temp;
-				} else {
-					return null;
-				}
-			}
-    		
-    	});
-    	executor.execute(updater);
-    }
-    
-    private void loadRecipes() {
-    	GameRegistry.addShapedRecipe(
-    			new ItemStack(playerdetectorplusinstance, 1), 
-    			"XYX",
-    			"YZY",
-    			"XYX",
-    			Character.valueOf('X'), Blocks.stone, 
-    			Character.valueOf('Y'), Items.ender_eye, 
-    			Character.valueOf('Z'), Items.redstone);
-    	GameRegistry.addShapedRecipe(
-    			new ItemStack(redstoneextenderinstance, 1), 
-    			"XYX",
-    			"YZY",
-    			"XYX",
-    			Character.valueOf('X'), Blocks.stone, 
-    			Character.valueOf('Y'), Blocks.redstone_torch, 
-    			Character.valueOf('Z'), Items.redstone);
-    }
-    
-    private void registerAnything() {
-    	GameRegistry.registerBlock(playerdetectorplusinstance, "PlayerDetectorPlus");
-    	GameRegistry.registerTileEntity(PlayerDetectorPlusTileEntity.class, "PlayerDetectorPlusTileEntity");
-    	GameRegistry.registerBlock(redstoneextenderinstance, "RedstoneExtender");
-    	GameRegistry.registerTileEntity(RedstoneExtenderTileEntity.class, "RedstoneExtenderTileEntity");
-    	GameRegistry.registerBlock(blockanalyzerinstance, "BlockAnalyzer");
-    	GameRegistry.registerTileEntity(BlockAnalyzerTileEntity.class, "BlockAnalyzerTileEntity");
     }
     
     public static UUID getPlayerUUID() {
