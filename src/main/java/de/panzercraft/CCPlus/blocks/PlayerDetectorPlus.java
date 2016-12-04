@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import de.panzercraft.CCPlus.CCPlus;
 import de.panzercraft.CCPlus.entities.PlayerDetectorPlusTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -24,7 +25,7 @@ public class PlayerDetectorPlus extends BlockContainer {
 		super(blockMaterial);
 		setBlockName("PlayerDetectorPlus");
 		setBlockTextureName("CCPlus:PlayerDetectorPlus");
-		setCreativeTab(CreativeTabs.tabRedstone);
+		setCreativeTab(CCPlus.tabCCPlus);
 		setStepSound(Block.soundTypePiston);
 	}
 

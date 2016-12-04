@@ -17,6 +17,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -35,12 +36,15 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import de.panzercraft.CCPlus.Handler.PlayerHandler;
 import de.panzercraft.CCPlus.Proxies.CCPlusProxy;
 import de.panzercraft.CCPlus.blocks.BlockAnalyzer;
+import de.panzercraft.CCPlus.blocks.Dendstone;
 import de.panzercraft.CCPlus.blocks.PlayerDetectorPlus;
 import de.panzercraft.CCPlus.blocks.RedstoneExtender;
 import de.panzercraft.CCPlus.entities.BlockAnalyzerTileEntity;
@@ -54,7 +58,7 @@ import ibxm.Player;
 public class CCPlus {
 	
     public static final String MODID = "CCPlus";
-    public static final String VERSION = "0.1.4_2016.12.03";
+    public static final String VERSION = "0.1.5_2016.12.04";
     
     @Instance(value = "CCPlus")
     public static CCPlus ccplus;
@@ -88,10 +92,24 @@ public class CCPlus {
     
     public static File config_file = null;
     
+    //ITEMS
+    
     //BLOCKS
     public static final PlayerDetectorPlus playerdetectorplusinstance = new PlayerDetectorPlus(Material.ground);
     public static final RedstoneExtender redstoneextenderinstance = new RedstoneExtender(Material.ground);
     public static final BlockAnalyzer blockanalyzerinstance = new BlockAnalyzer(Material.ground);
+    public static final Dendstone dendstoneinstance = new Dendstone(Material.ground);
+    
+    //Creative TABS
+    public static CreativeTabs tabCCPlus = new CreativeTabs("tabCCPlus") {
+
+		@Override
+		@SideOnly(Side.CLIENT)
+		public Item getTabIconItem() {
+			return new ItemStack(playerdetectorplusinstance, 1).getItem();
+		}
+    	
+    };
     
     public static Thread updater = new UpdaterThread();
     
@@ -115,6 +133,7 @@ public class CCPlus {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         //System.out.println(getPlayerUUID());
+    	setCreativeTabs();
     	GameRegistry.registerWorldGenerator(new WorldGeneratorCCPlus(), 5);
     	ComputerCraftAPI.registerPeripheralProvider(new IPeripheralProvider() {
 
@@ -149,6 +168,14 @@ public class CCPlus {
     			Character.valueOf('X'), Blocks.stone, 
     			Character.valueOf('Y'), Blocks.redstone_torch, 
     			Character.valueOf('Z'), Items.redstone);
+    	GameRegistry.addShapedRecipe(
+    			new ItemStack(dendstoneinstance, 1),
+    			"XYX",
+    			"YZY",
+    			"XYX",
+    			Character.valueOf('X'), Blocks.diamond_block, 
+    			Character.valueOf('Y'), Blocks.redstone_block, 
+    			Character.valueOf('Z'), Blocks.end_stone);
     }
     
     private void registerAnything() {
@@ -158,6 +185,7 @@ public class CCPlus {
     	GameRegistry.registerTileEntity(RedstoneExtenderTileEntity.class, "RedstoneExtenderTileEntity");
     	GameRegistry.registerBlock(blockanalyzerinstance, "BlockAnalyzer");
     	GameRegistry.registerTileEntity(BlockAnalyzerTileEntity.class, "BlockAnalyzerTileEntity");
+    	GameRegistry.registerBlock(dendstoneinstance, "Dendstone");
     }
     
     private void loadConfig() {
@@ -252,6 +280,13 @@ public class CCPlus {
     	block_analyzer_range = prop.getInt(block_analyzer_range);
     	
     	config.save();
+    }
+    
+    private void setCreativeTabs() {
+    	playerdetectorplusinstance.setCreativeTab(CCPlus.tabCCPlus);
+    	redstoneextenderinstance.setCreativeTab(CCPlus.tabCCPlus);
+    	blockanalyzerinstance.setCreativeTab(CCPlus.tabCCPlus);
+    	dendstoneinstance.setCreativeTab(CCPlus.tabCCPlus);
     }
     
     public static UUID getPlayerUUID() {

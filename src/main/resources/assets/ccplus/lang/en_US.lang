@@ -1,3 +1,5 @@
 tile.PlayerDetectorPlus.name=Player Detector Plus
 tile.RedstoneExtender.name=Redstone Extender
 tile.BlockAnalyzer.name=Block Analyzer
+itemGroup.tabCCPlus=CCPlus
+tile.Dendstone.name=Dendstone

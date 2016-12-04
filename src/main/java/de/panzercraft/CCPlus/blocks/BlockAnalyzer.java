@@ -1,5 +1,6 @@
 package de.panzercraft.CCPlus.blocks;
 
+import de.panzercraft.CCPlus.CCPlus;
 import de.panzercraft.CCPlus.entities.BlockAnalyzerTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -14,7 +15,7 @@ public class BlockAnalyzer extends BlockContainer {
 		super(material);
 		setBlockName("BlockAnalyzer");
 		setBlockTextureName("CCPlus:BlockAnalyzer");
-		setCreativeTab(CreativeTabs.tabRedstone);
+		setCreativeTab(CCPlus.tabCCPlus);
 		setStepSound(Block.soundTypePiston);
 	}
 

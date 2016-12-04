@@ -2,6 +2,7 @@ package de.panzercraft.CCPlus.blocks;
 
 import java.util.Random;
 
+import de.panzercraft.CCPlus.CCPlus;
 import de.panzercraft.CCPlus.entities.PlayerDetectorPlusTileEntity;
 import de.panzercraft.CCPlus.entities.RedstoneExtenderTileEntity;
 import de.panzercraft.CCPlus.utils.BlockUtils;
@@ -21,7 +22,7 @@ public class RedstoneExtender extends BlockContainer {
 		super(blockMaterial);
 		setBlockName("RedstoneExtender");
 		setBlockTextureName("CCPlus:RedstoneExtender");
-		setCreativeTab(CreativeTabs.tabRedstone);
+		setCreativeTab(CCPlus.tabCCPlus);
 		setStepSound(Block.soundTypePiston);
 	}
 
