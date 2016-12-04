@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.BlockChest;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -55,10 +56,12 @@ import de.panzercraft.CCPlus.Handler.PlayerHandler;
 import de.panzercraft.CCPlus.Proxies.CCPlusProxy;
 import de.panzercraft.CCPlus.blocks.BlockAnalyzer;
 import de.panzercraft.CCPlus.blocks.BlockPosExact;
+import de.panzercraft.CCPlus.blocks.ChestManager;
 import de.panzercraft.CCPlus.blocks.Dendstone;
 import de.panzercraft.CCPlus.blocks.PlayerDetectorPlus;
 import de.panzercraft.CCPlus.blocks.RedstoneExtender;
 import de.panzercraft.CCPlus.entities.BlockAnalyzerTileEntity;
+import de.panzercraft.CCPlus.entities.ChestManagerTileEntity;
 import de.panzercraft.CCPlus.entities.PlayerDetectorPlusTileEntity;
 import de.panzercraft.CCPlus.entities.RedstoneExtenderTileEntity;
 import de.panzercraft.CCPlus.generator.WorldGeneratorCCPlus;
@@ -112,6 +115,7 @@ public class CCPlus {
     public static final RedstoneExtender redstoneextenderinstance = new RedstoneExtender(Material.ground);
     public static final BlockAnalyzer blockanalyzerinstance = new BlockAnalyzer(Material.ground);
     public static final Dendstone dendstoneinstance = new Dendstone(Material.ground);
+    public static final ChestManager chestmanagerinstance = new ChestManager(Material.ground);
     
     //ACHIEVEMENTS
     public static AchievementPage achievement_page;
@@ -215,6 +219,8 @@ public class CCPlus {
     	GameRegistry.registerBlock(blockanalyzerinstance, "BlockAnalyzer");
     	GameRegistry.registerTileEntity(BlockAnalyzerTileEntity.class, "BlockAnalyzerTileEntity");
     	GameRegistry.registerBlock(dendstoneinstance, "Dendstone");
+    	GameRegistry.registerBlock(chestmanagerinstance, "ChestManager");
+    	GameRegistry.registerTileEntity(ChestManagerTileEntity.class, "ChestManagerTileEntity");
     }
     
     private void loadConfig() {
@@ -320,6 +326,7 @@ public class CCPlus {
     	redstoneextenderinstance.setCreativeTab(CCPlus.tabCCPlus);
     	blockanalyzerinstance.setCreativeTab(CCPlus.tabCCPlus);
     	dendstoneinstance.setCreativeTab(CCPlus.tabCCPlus);
+    	chestmanagerinstance.setCreativeTab(CCPlus.tabCCPlus);
     }
     
     public static UUID getPlayerUUID() {
