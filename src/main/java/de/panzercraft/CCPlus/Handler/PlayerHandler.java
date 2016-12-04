@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
@@ -58,8 +59,9 @@ public class PlayerHandler {
 		if(respawned_times.containsKey(player)) {
 			respawned_times.remove(player);
 		}
-		System.out.println(String.format("Player \"%s\" logged out (%s)", player.getDisplayName(), LocalDateTime.ofInstant(logged_out, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))));
-		savePlayerLogToFile(player, getLogFile(player, "txt"));
+		File file = getLogFile(player, "txt");
+		File file_done = savePlayerLogToFile(player, file);
+		System.out.println(String.format("Player \"%s\" logged out (%s) (File: %s, File 2: %s)", player.getDisplayName(), LocalDateTime.ofInstant(logged_out, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")), file, file_done));
 	}
 	
 	@SubscribeEvent
@@ -108,7 +110,15 @@ public class PlayerHandler {
 	}
 	
 	public static boolean isInGame() {
-		return Minecraft.getMinecraft().theWorld != null;
+		if(FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+			try {
+				return Minecraft.getMinecraft().theWorld != null;
+			} catch (Exception ex) {
+				return false;
+			}
+		} else {
+			return true;
+		}
 	}
 	
 	public static EntityPlayer[] getPlayers() {
@@ -180,6 +190,7 @@ public class PlayerHandler {
 		if(player == null || now == null) {
 			return;
 		}
+		//System.out.println("Logged \"" + player.getDisplayName() + "\"");
 		final HashMap<Instant, BlockPosExact> positions = (hawk_eye.get(player) != null) ? hawk_eye.get(player) : new HashMap<Instant, BlockPosExact>();
 		positions.put(now, new BlockPosExact(player.posX, player.posY, player.posZ));
 		hawk_eye.put(player, positions);
@@ -210,10 +221,36 @@ public class PlayerHandler {
 	}
 
 	public static File savePlayerLogToFile(EntityPlayer player, File file) {
+		boolean stop = false;
+		if(file == null) {
+			System.err.println("File is null");
+			stop = true;
+		} else if(file.exists()) {
+			System.out.println("File exists");
+			if(file.isDirectory()) {
+				System.err.println("File exists and is a directory");
+				stop = true;
+			}
+		} else if(player == null) {
+			System.err.println("Player is null");
+			stop = true;
+		} else if(hawk_eye.get(player) == null) {
+			System.err.println("Player has no data");
+			stop = true;
+		}
+		if(stop) {
+			return null;
+		}
+		/*
 		if(file == null || (file.exists() && file.isDirectory()) || player == null || hawk_eye.get(player) == null) {
 			return null;
 		}
+		*/
 		try {
+			if(!file.exists()) {
+				file.createNewFile();
+			}
+			System.out.println("Created the file: " + file.getAbsolutePath());
 			HashMap<Instant, BlockPosExact> data = hawk_eye.get(player);
 			FileWriter fw = new FileWriter(file, false);
 			BufferedWriter bw = new BufferedWriter(fw);
@@ -221,7 +258,7 @@ public class PlayerHandler {
 				if(instant != null) {
 					BlockPosExact blockpos = data.get(instant);
 					if(blockpos != null) {
-						bw.write(String.format("%s: %s", instant.toString(), blockpos.toString()));
+						bw.write(String.format("%s#%s", instant.toString(), blockpos.toString()));
 						bw.newLine();
 					}
 				}
@@ -230,9 +267,11 @@ public class PlayerHandler {
 			fw.close();
 			bw = null;
 			fw = null;
+			return file;
 		} catch (Exception ex) {
+			System.err.println("Exception while writing to the log file");
+			return null;
 		}
-		return file;
 	}
 	
 }

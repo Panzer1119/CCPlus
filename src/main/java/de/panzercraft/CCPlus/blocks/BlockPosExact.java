@@ -57,7 +57,7 @@ public class BlockPosExact {
     
     @Override
     public String toString() {
-        return String.format("(%s,%s,%s)", x, y, z);
+        return String.format("%.10f;%.10f;%.10f", x, y, z);
     }
 
 }
