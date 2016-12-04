@@ -47,5 +47,5 @@ public class BlockPos {
     public String toString() {
         return String.format("(%s,%s,%s)", x, y, z);
     }
-
+    
 }
