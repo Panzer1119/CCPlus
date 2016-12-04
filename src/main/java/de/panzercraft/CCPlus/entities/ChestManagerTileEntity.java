@@ -1,5 +1,7 @@
 package de.panzercraft.CCPlus.entities;
 
+import java.util.HashMap;
+
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -9,6 +11,7 @@ import de.panzercraft.CCPlus.blocks.ChestManager;
 import de.panzercraft.CCPlus.blocks.RedstoneExtender;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
@@ -65,8 +68,22 @@ public class ChestManagerTileEntity extends TileEntity implements IPeripheral {
 			case 2:
 				if(isChestPresent(face)) {
 					if(tileentitychest != null) {
-						int slot = ((Number) arguments[1]).intValue();
-						return new Object[] {tileentitychest.getStackInSlot(slot)};
+						int slot = ((Number) arguments[1]).intValue() - 1; // -1 For lua you start with 1 and not with 0 like in java
+						if(slot < 0 || slot >= tileentitychest.getSizeInventory()) {
+							return new Object[] {};
+						} else {
+							ItemStack stack = tileentitychest.getStackInSlot(slot);
+							HashMap<String, Object> data = new HashMap<String, Object>();
+							if(stack != null) {
+								if(stack.hasDisplayName()) {
+									data.put("displayName", stack.getDisplayName());
+								}
+								data.put("unlocalizedName", stack.getItem().getUnlocalizedName());
+								data.put("count", stack.stackSize);
+								data.put("itemDamage", stack.getItemDamage());
+							}
+							return new Object[] {data};
+						}
 					} else {
 						return new Object[] {};
 					}
