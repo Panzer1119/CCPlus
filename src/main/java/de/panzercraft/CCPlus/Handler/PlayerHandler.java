@@ -10,6 +10,8 @@ import java.util.HashMap;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.ItemPickupEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.ItemSmeltedEvent;
 import de.panzercraft.CCPlus.CCPlus;
 import de.panzercraft.CCPlus.blocks.BlockPosExact;
 import de.panzercraft.CCPlus.utils.PlayerPlus;
@@ -77,6 +79,16 @@ public class PlayerHandler {
 		if(event.crafting.getItem().equals(new ItemStack(CCPlus.playerdetectorplusinstance, 1).getItem())) {
 			event.player.addStat(CCPlus.achievement_craftPDP, 1);
 		}
+	}
+	
+	@SubscribeEvent
+	public void itemSmelted(ItemSmeltedEvent event) {
+		
+	}
+	
+	@SubscribeEvent
+	public void itemPickedUp(ItemPickupEvent event) {
+		
 	}
 	
 	public static EntityPlayer[] getPlayers() {

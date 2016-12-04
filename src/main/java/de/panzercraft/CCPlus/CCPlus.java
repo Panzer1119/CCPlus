@@ -45,7 +45,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
-import de.panzercraft.CCPlus.Handler.CraftingHandler;
 import de.panzercraft.CCPlus.Handler.PlayerHandler;
 import de.panzercraft.CCPlus.Proxies.CCPlusProxy;
 import de.panzercraft.CCPlus.blocks.BlockAnalyzer;
@@ -127,7 +126,6 @@ public class CCPlus {
     	loadConfig();
     	
     	FMLCommonHandler.instance().bus().register(new PlayerHandler());
-    	FMLCommonHandler.instance().bus().register(new CraftingHandler());
     	
     	registerAnything();
     }
