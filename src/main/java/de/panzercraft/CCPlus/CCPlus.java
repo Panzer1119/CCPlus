@@ -3,6 +3,11 @@ package de.panzercraft.CCPlus;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -49,6 +54,7 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import de.panzercraft.CCPlus.Handler.PlayerHandler;
 import de.panzercraft.CCPlus.Proxies.CCPlusProxy;
 import de.panzercraft.CCPlus.blocks.BlockAnalyzer;
+import de.panzercraft.CCPlus.blocks.BlockPosExact;
 import de.panzercraft.CCPlus.blocks.Dendstone;
 import de.panzercraft.CCPlus.blocks.PlayerDetectorPlus;
 import de.panzercraft.CCPlus.blocks.RedstoneExtender;
@@ -127,6 +133,7 @@ public class CCPlus {
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+    	System.out.println("CCPlus: PreInit");
     	config_file = event.getSuggestedConfigurationFile();
     	loadConfig();
     	
@@ -137,6 +144,7 @@ public class CCPlus {
     
     @EventHandler
     public void init(FMLInitializationEvent event) {
+    	System.out.println("CCPlus: Init");
     	proxy.registerRenderers();
         //System.out.println("DIRT BLOCK >> "+Blocks.dirt.getUnlocalizedName());
     	loadRecipes();
@@ -144,6 +152,7 @@ public class CCPlus {
     
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+    	System.out.println("CCPlus: PostInit");
         //System.out.println(getPlayerUUID());
     	setCreativeTabs();
     	GameRegistry.registerWorldGenerator(new WorldGeneratorCCPlus(), 5);
@@ -160,8 +169,8 @@ public class CCPlus {
 			}
     		
     	});
-    	executor.execute(updater);
     	loadAchievements();
+    	executor.execute(updater);
     }
     
     private void loadAchievements() {

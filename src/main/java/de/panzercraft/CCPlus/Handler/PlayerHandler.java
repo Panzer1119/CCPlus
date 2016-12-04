@@ -8,7 +8,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -59,9 +62,9 @@ public class PlayerHandler {
 		if(respawned_times.containsKey(player)) {
 			respawned_times.remove(player);
 		}
-		File file = getLogFile(player, "txt");
+		File file = getLogFile(player);
 		File file_done = savePlayerLogToFile(player, file);
-		System.out.println(String.format("Player \"%s\" logged out (%s) (File: %s, File 2: %s)", player.getDisplayName(), LocalDateTime.ofInstant(logged_out, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")), file, file_done));
+		System.out.println(String.format("Player \"%s\" logged out (%s) (File: %s)", player.getDisplayName(), LocalDateTime.ofInstant(logged_out, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")), file));
 	}
 	
 	@SubscribeEvent
@@ -192,7 +195,10 @@ public class PlayerHandler {
 		}
 		//System.out.println("Logged \"" + player.getDisplayName() + "\"");
 		final HashMap<Instant, BlockPosExact> positions = (hawk_eye.get(player) != null) ? hawk_eye.get(player) : new HashMap<Instant, BlockPosExact>();
-		positions.put(now, new BlockPosExact(player.posX, player.posY, player.posZ));
+		BlockPosExact pos = new BlockPosExact(player.posX, player.posY, player.posZ);
+		pos.instant = now;
+		pos.dimension = player.dimension;
+		positions.put(now, pos);
 		hawk_eye.put(player, positions);
 	}
 	
@@ -211,7 +217,8 @@ public class PlayerHandler {
 		return output;
 	}
 	
-	public static File getLogFile(EntityPlayer player, String extension) {
+	public static File getLogFile(EntityPlayer player) {
+		String extension = "txt";
 		File file = null;
 		File folder =  getLogOutputFolder();
 		if(folder != null) {
@@ -250,18 +257,30 @@ public class PlayerHandler {
 			if(!file.exists()) {
 				file.createNewFile();
 			}
-			System.out.println("Created the file: " + file.getAbsolutePath());
+			//System.out.println("Created the file: " + file.getAbsolutePath());
 			HashMap<Instant, BlockPosExact> data = hawk_eye.get(player);
+			ArrayList<BlockPosExact> pos = new ArrayList<BlockPosExact>();
+			for(Instant instant : data.keySet()) {
+				BlockPosExact pos_new = data.get(instant);
+				pos_new.instant = instant;
+				pos.add(pos_new);
+			}
+			pos.sort(new Comparator() {
+
+				@Override
+				public int compare(Object o1, Object o2) {
+					BlockPosExact b1 = (BlockPosExact) o1;
+					BlockPosExact b2 = (BlockPosExact) o2;
+					return b1.instant.compareTo(b2.instant);
+				}
+				
+				
+			});
 			FileWriter fw = new FileWriter(file, false);
 			BufferedWriter bw = new BufferedWriter(fw);
-			for(Instant instant : data.keySet()) {
-				if(instant != null) {
-					BlockPosExact blockpos = data.get(instant);
-					if(blockpos != null) {
-						bw.write(String.format("%s#%s", instant.toString(), blockpos.toString()));
-						bw.newLine();
-					}
-				}
+			for(BlockPosExact bpe : pos) {
+				bw.write(String.format("%s#%s", bpe.instant.toString(), bpe.toString()));
+				bw.newLine();
 			}
 			bw.close();
 			fw.close();
@@ -272,6 +291,57 @@ public class PlayerHandler {
 			System.err.println("Exception while writing to the log file");
 			return null;
 		}
+	}
+	
+	public static ArrayList<BlockPosExact> loadPlayerFromLogFile(File file) {
+		if(file == null || !file.exists() || (file.exists() && file.isDirectory())) {
+			return null;
+		}
+		HashMap<Instant, BlockPosExact> data = new HashMap<Instant, BlockPosExact>();
+		ArrayList<BlockPosExact> pos = new ArrayList<BlockPosExact>();
+		try {
+			Scanner scanner = new Scanner(file);
+			while(scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				try {
+					Instant timestamp = Instant.parse(line.split("#")[0]);
+					String pos_string = line.split("#")[1];
+					BlockPosExact blockpos = new BlockPosExact(pos_string, ";");
+					data.put(timestamp, blockpos);
+				} catch (Exception ex) {
+					System.err.println("Error while reading log: " + ex);
+				}
+			}
+			scanner.close();
+			scanner = null;
+			for(Instant instant : data.keySet()) {
+				BlockPosExact pos_new = data.get(instant);
+				pos_new.instant = instant;
+				pos.add(pos_new);
+			}
+			pos.sort(new Comparator() {
+
+				@Override
+				public int compare(Object o1, Object o2) {
+					BlockPosExact b1 = (BlockPosExact) o1;
+					BlockPosExact b2 = (BlockPosExact) o2;
+					return b1.instant.compareTo(b2.instant);
+				}
+				
+				
+			});
+		} catch (Exception ex) {
+			System.err.println("Error while reading from the log file");
+		}
+		return pos;
+	}
+	
+	public static void printLog(File file) {
+		//new File("E:\\Daten\\Minecraft\\Mods\\Eigene\\1.7.10\\forge-1.7.10-10.13.4.1614-1.7.10-src\\eclipse\\logs\\Player441.txt")
+		ArrayList<BlockPosExact> data = PlayerHandler.loadPlayerFromLogFile(file);
+    	for(BlockPosExact pos : data) {
+    		System.out.println(String.format("%s: %s", LocalDateTime.ofInstant(pos.instant, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")), pos.toString()));
+    	}
 	}
 	
 }

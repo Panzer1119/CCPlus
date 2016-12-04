@@ -1,5 +1,7 @@
 package de.panzercraft.CCPlus.blocks;
 
+import java.time.Instant;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -8,6 +10,8 @@ public class BlockPosExact {
     public double x = -1;
     public double y = -1;
     public double z = -1;
+    public int dimension = 0;
+    public Instant instant = Instant.now();
 
     public BlockPosExact(double x, double y, double z) {
         this.x = x;
@@ -17,6 +21,13 @@ public class BlockPosExact {
     
     public BlockPosExact(TileEntity te) {
         this(te.xCoord, te.yCoord, te.zCoord);
+    }
+    
+    public BlockPosExact(String coords, String delimiter) {
+    	this(Double.parseDouble(coords.split(delimiter)[0].replaceAll(",", ".")), Double.parseDouble(coords.split(delimiter)[1].replaceAll(",", ".")), Double.parseDouble(coords.split(delimiter)[2].replaceAll(",", ".")));
+    	if(coords.split(delimiter).length > 3) {
+    		dimension = Integer.parseInt(coords.split(delimiter)[3]);
+    	}
     }
     
     public double getX() {
@@ -57,7 +68,7 @@ public class BlockPosExact {
     
     @Override
     public String toString() {
-        return String.format("%.10f;%.10f;%.10f", x, y, z);
+        return String.format("%.14f;%.14f;%.14f;%d", x, y, z, dimension);
     }
 
 }
