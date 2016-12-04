@@ -9,10 +9,13 @@ import java.util.HashMap;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
+import de.panzercraft.CCPlus.CCPlus;
 import de.panzercraft.CCPlus.blocks.BlockPosExact;
 import de.panzercraft.CCPlus.utils.PlayerPlus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
@@ -67,6 +70,13 @@ public class PlayerHandler {
 		EntityPlayer player = event.player;
 		respawned_times.put(player, respawned);
 		System.out.println(String.format("Player \"%s\" respawned (%s)", player.getDisplayName(), LocalDateTime.ofInstant(respawned, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))));
+	}
+
+	@SubscribeEvent
+	public void itemCrafted(ItemCraftedEvent event) {
+		if(event.crafting.getItem().equals(new ItemStack(CCPlus.playerdetectorplusinstance, 1).getItem())) {
+			event.player.addStat(CCPlus.achievement_craftPDP, 1);
+		}
 	}
 	
 	public static EntityPlayer[] getPlayers() {

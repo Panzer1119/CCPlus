@@ -162,7 +162,7 @@ public class CCPlus {
     }
     
     private void loadAchievements() {
-    	achievement_craftPDP = new Achievement("craftPDP", "craftPDP", 1, -2, playerdetectorplusinstance, AchievementList.openInventory).registerStat();
+    	achievement_craftPDP = new Achievement("craftPDP", "craftPDP", 4, -4, playerdetectorplusinstance, AchievementList.buildWorkBench).registerStat();
 	}
 
 	private void loadRecipes() {
