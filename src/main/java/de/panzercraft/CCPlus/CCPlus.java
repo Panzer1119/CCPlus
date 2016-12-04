@@ -17,8 +17,11 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.Achievement;
+import net.minecraft.stats.AchievementList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -34,6 +37,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -41,6 +45,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
+import de.panzercraft.CCPlus.Handler.CraftingHandler;
 import de.panzercraft.CCPlus.Handler.PlayerHandler;
 import de.panzercraft.CCPlus.Proxies.CCPlusProxy;
 import de.panzercraft.CCPlus.blocks.BlockAnalyzer;
@@ -100,6 +105,9 @@ public class CCPlus {
     public static final BlockAnalyzer blockanalyzerinstance = new BlockAnalyzer(Material.ground);
     public static final Dendstone dendstoneinstance = new Dendstone(Material.ground);
     
+    //ACHIEVEMENTS
+    public static Achievement achievement_craftPDP;
+    
     //Creative TABS
     public static CreativeTabs tabCCPlus = new CreativeTabs("tabCCPlus") {
 
@@ -119,6 +127,7 @@ public class CCPlus {
     	loadConfig();
     	
     	FMLCommonHandler.instance().bus().register(new PlayerHandler());
+    	FMLCommonHandler.instance().bus().register(new CraftingHandler());
     	
     	registerAnything();
     }
@@ -149,9 +158,14 @@ public class CCPlus {
     		
     	});
     	executor.execute(updater);
+    	loadAchievements();
     }
     
-    private void loadRecipes() {
+    private void loadAchievements() {
+    	achievement_craftPDP = new Achievement("craftPDP", "craftPDP", 1, -2, playerdetectorplusinstance, AchievementList.openInventory).registerStat();
+	}
+
+	private void loadRecipes() {
     	GameRegistry.addShapedRecipe(
     			new ItemStack(playerdetectorplusinstance, 1), 
     			"XYX",

@@ -3,3 +3,5 @@ tile.RedstoneExtender.name=Redstone Erweiterer
 tile.BlockAnalyzer.name=Block Analysierer
 itemGroup.tabCCPlus=CCPlus
 tile.Dendstone.name=Dendstone
+achievement.craftPDP=Erster Schritt zur vollen Kontrolle
+achievement.craftPDP.desc=Bastel einen Spieler Detektor Plus
