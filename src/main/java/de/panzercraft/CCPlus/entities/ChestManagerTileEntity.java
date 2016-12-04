@@ -38,7 +38,7 @@ public class ChestManagerTileEntity extends TileEntity implements IPeripheral {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[] {"isChestPresent", "getStackInSlot"}; 
+		return new String[] {"isChestPresent", "getInventorySize", "getStackInSlot"}; 
 	}
 
 	@Override
@@ -47,17 +47,32 @@ public class ChestManagerTileEntity extends TileEntity implements IPeripheral {
 		EnumFacing face = EnumFacing.valueOf(side);
 		ChestManager chestmanager = getBlock();
 		BlockPos blockpos_this = new BlockPos(this);
+		BlockChest chest = getChest(face);
+		TileEntityChest tileentitychest = getChestTileEntity(face); 
 		switch(method) {
 			case 0:
 				return new Object[] {isChestPresent(face)};
 			case 1:
 				if(isChestPresent(face)) {
-					int slot = ((Number) arguments[1]).intValue();
-					BlockChest chest = (BlockChest) getChest(face);
-					TileEntityChest tileentitychest = getChestTileEntity(face); 
-					return new Object[] {tileentitychest.getStackInSlot(slot).toString()};
+					if(tileentitychest != null) {
+						return new Object[] {tileentitychest.getSizeInventory()};
+					} else {
+						return new Object[] {};
+					}
+				} else {
+					return new Object[] {};
 				}
-				return new Object[] {};
+			case 2:
+				if(isChestPresent(face)) {
+					if(tileentitychest != null) {
+						int slot = ((Number) arguments[1]).intValue();
+						return new Object[] {tileentitychest.getStackInSlot(slot)};
+					} else {
+						return new Object[] {};
+					}
+				} else {
+					return new Object[] {};
+				}
 			default:
 				return null;
 		}
@@ -78,11 +93,15 @@ public class ChestManagerTileEntity extends TileEntity implements IPeripheral {
 		return this == other && other instanceof ChestManagerTileEntity;
 	}
 	
-	private Block getChest(EnumFacing face) {
+	private BlockChest getChest(EnumFacing face) {
 		BlockPos blockpos_this = new BlockPos(this);
 		BlockPos blockpos_chest = blockpos_this.offset(face);
-		Block block_chest = world.getBlock(blockpos_chest.x, blockpos_chest.y, blockpos_chest.z);
-		return block_chest;
+		Block block = world.getBlock(blockpos_chest.x, blockpos_chest.y, blockpos_chest.z);
+		if(block instanceof BlockChest) {
+			BlockChest block_chest = (BlockChest) block;
+			return block_chest;
+		}
+		return null;
 	}
 	
 	private boolean isChestPresent(EnumFacing face) {
@@ -93,8 +112,12 @@ public class ChestManagerTileEntity extends TileEntity implements IPeripheral {
 	private TileEntityChest getChestTileEntity(EnumFacing face) {
 		BlockPos blockpos_this = new BlockPos(this);
 		BlockPos blockpos_chest = blockpos_this.offset(face);
-		TileEntityChest tileentitychest = (TileEntityChest) world.getTileEntity(blockpos_chest.x, blockpos_chest.y, blockpos_chest.z);
-		return tileentitychest;
+		TileEntity tileentity =  world.getTileEntity(blockpos_chest.x, blockpos_chest.y, blockpos_chest.z);
+		if(tileentity instanceof TileEntityChest) {
+			TileEntityChest tileentitychest = (TileEntityChest) tileentity;
+			return tileentitychest;
+		}
+		return null;
 	}
 
 }
