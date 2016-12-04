@@ -95,6 +95,8 @@ public class CCPlus {
     public static boolean block_analyzer_enable_dimensional_analysis = false;
     public static int block_analyzer_range = 100;
     
+    public static String debug_log_output_folder = "";
+    
     public static File config_file = null;
     
     //ITEMS
@@ -296,6 +298,10 @@ public class CCPlus {
     	prop = config.get("block_analyzer", "block_analyzer_range", block_analyzer_range);
     	prop.comment = "Sets the range/radius of the block analyzer (-1 for infinite a range) (Default: 100)";
     	block_analyzer_range = prop.getInt(block_analyzer_range);
+    	
+    	prop = config.get("debug", "debug_log_output_folder", debug_log_output_folder);
+    	prop.comment = "The folder where the logs will be put in";
+    	debug_log_output_folder = prop.getString();
     	
     	config.save();
     }

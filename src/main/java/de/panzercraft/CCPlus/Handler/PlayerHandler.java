@@ -1,5 +1,8 @@
 package de.panzercraft.CCPlus.Handler;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -12,6 +15,8 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.ItemPickupEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.ItemSmeltedEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.panzercraft.CCPlus.CCPlus;
 import de.panzercraft.CCPlus.blocks.BlockPosExact;
 import de.panzercraft.CCPlus.utils.PlayerPlus;
@@ -54,6 +59,7 @@ public class PlayerHandler {
 			respawned_times.remove(player);
 		}
 		System.out.println(String.format("Player \"%s\" logged out (%s)", player.getDisplayName(), LocalDateTime.ofInstant(logged_out, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))));
+		savePlayerLogToFile(player, getLogFile(player, "txt"));
 	}
 	
 	@SubscribeEvent
@@ -184,6 +190,49 @@ public class PlayerHandler {
 		for(EntityPlayer player : players) {
 			logPlayer(player, now);
 		}
+	}
+	
+	public static File getLogOutputFolder() {
+		File output = null;
+		if(!CCPlus.debug_log_output_folder.isEmpty()) {
+			output = new File(CCPlus.debug_log_output_folder);
+		}
+		return output;
+	}
+	
+	public static File getLogFile(EntityPlayer player, String extension) {
+		File file = null;
+		File folder =  getLogOutputFolder();
+		if(folder != null) {
+			file = new File(folder.getAbsolutePath() + File.separator + player.getDisplayName() + ((extension.isEmpty()) ? "" : "." + extension));
+		}
+		return file;
+	}
+
+	public static File savePlayerLogToFile(EntityPlayer player, File file) {
+		if(file == null || (file.exists() && file.isDirectory()) || player == null || hawk_eye.get(player) == null) {
+			return null;
+		}
+		try {
+			HashMap<Instant, BlockPosExact> data = hawk_eye.get(player);
+			FileWriter fw = new FileWriter(file, false);
+			BufferedWriter bw = new BufferedWriter(fw);
+			for(Instant instant : data.keySet()) {
+				if(instant != null) {
+					BlockPosExact blockpos = data.get(instant);
+					if(blockpos != null) {
+						bw.write(String.format("%s: %s", instant.toString(), blockpos.toString()));
+						bw.newLine();
+					}
+				}
+			}
+			bw.close();
+			fw.close();
+			bw = null;
+			fw = null;
+		} catch (Exception ex) {
+		}
+		return file;
 	}
 	
 }

@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 public class UpdaterThread extends Thread {
 	
 	public long delay = 1;
-	public long delay_coord_logger = 1000;
+	public long delay_coord_logger = 100;
 	public long delay_achievements = 100;
 	
 	@Override
