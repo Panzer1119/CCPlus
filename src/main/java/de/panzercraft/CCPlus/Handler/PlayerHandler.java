@@ -91,6 +91,20 @@ public class PlayerHandler {
 		
 	}
 	
+	public static void checkAchievements() {
+		//System.out.println("Checking Achievements");
+		for(EntityPlayer player : getPlayers()) {
+			//System.out.println(String.format("X: %.2f, Z: %.2f", player.posX, player.posZ));
+			if(player.dimension == 0 && ((int) Math.abs(player.posX)) == 0 && ((int) Math.abs(player.posZ)) == 0) {
+				player.addStat(CCPlus.achievement_visit_groundzero, 1);
+			}
+		}
+	}
+	
+	public static boolean isInGame() {
+		return Minecraft.getMinecraft().theWorld != null;
+	}
+	
 	public static EntityPlayer[] getPlayers() {
 		EntityPlayer[] players = new EntityPlayer[MinecraftServer.getServer().getConfigurationManager().getCurrentPlayerCount()];
 		int i = 0;

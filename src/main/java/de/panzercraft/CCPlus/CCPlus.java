@@ -25,6 +25,7 @@ import net.minecraft.stats.AchievementList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -105,7 +106,9 @@ public class CCPlus {
     public static final Dendstone dendstoneinstance = new Dendstone(Material.ground);
     
     //ACHIEVEMENTS
+    public static AchievementPage achievement_page;
     public static Achievement achievement_craftPDP;
+    public static Achievement achievement_visit_groundzero;
     
     //Creative TABS
     public static CreativeTabs tabCCPlus = new CreativeTabs("tabCCPlus") {
@@ -160,7 +163,10 @@ public class CCPlus {
     }
     
     private void loadAchievements() {
-    	achievement_craftPDP = new Achievement("craftPDP", "craftPDP", 4, -4, playerdetectorplusinstance, AchievementList.buildWorkBench).registerStat();
+    	achievement_craftPDP = new Achievement("craftPDP", "craftPDP", 0, 0, playerdetectorplusinstance, AchievementList.buildWorkBench).registerStat();
+    	achievement_visit_groundzero = new Achievement("groundZero", "groundZero", 4, 5, Items.ender_eye, null).setSpecial().registerStat();
+    	achievement_page = new AchievementPage("CCPlus", achievement_craftPDP, achievement_visit_groundzero);
+    	AchievementPage.registerAchievementPage(achievement_page);
 	}
 
 	private void loadRecipes() {

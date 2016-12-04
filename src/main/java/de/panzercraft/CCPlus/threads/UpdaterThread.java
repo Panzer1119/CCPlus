@@ -11,6 +11,7 @@ public class UpdaterThread extends Thread {
 	
 	public long delay = 1;
 	public long delay_coord_logger = 1000;
+	public long delay_achievements = 100;
 	
 	@Override
 	public void run() {
@@ -19,14 +20,21 @@ public class UpdaterThread extends Thread {
 		while(run) {
 			final Instant now = Instant.now();
 			final Duration duration = Duration.between(started, now);
-			if(CCPlus.debug_enabled) {
-				if(CCPlus.debug_hawk_eye_enabled) {
-					if(duration.toMillis() % delay_coord_logger == 0) {
-						if(Minecraft.getMinecraft().theWorld != null) {
+			try {
+				if(CCPlus.debug_enabled) {
+					if(CCPlus.debug_hawk_eye_enabled) {
+						if(PlayerHandler.isInGame() && duration.toMillis() % delay_coord_logger == 0) {
 							PlayerHandler.logPlayers(now);
 						}
 					}
 				}
+			} catch (Exception ex) {
+			}
+			try {
+				if(PlayerHandler.isInGame() && duration.toMillis() % delay_achievements == 0) {
+					PlayerHandler.checkAchievements();
+				}
+			} catch (Exception ex) {
 			}
 			try {
 				Thread.sleep(delay);
