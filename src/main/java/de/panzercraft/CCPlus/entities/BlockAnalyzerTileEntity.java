@@ -77,6 +77,10 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 			case 1:
 				String block_unlocalizedName = ((String) arguments[0]);
 				int block_range = ((Number) arguments[1]).intValue();
+				boolean inRange = isInRange(block_range);
+				if(!inRange) {
+					return new Object[] {};
+				}
 				int minx = this.xCoord - block_range;
 				int maxx = this.xCoord + block_range;
 				int miny = this.yCoord - block_range;
@@ -112,6 +116,10 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 			case 2:
 				String block_unlocalizedName_2 = ((String) arguments[0]);
 				int block_range_2 = ((Number) arguments[1]).intValue();
+				boolean inRange_2 = isInRange(block_range_2);
+				if(!inRange_2) {
+					return new Object[] {};
+				}
 				int minx_2 = this.xCoord - block_range_2;
 				int maxx_2 = this.xCoord + block_range_2;
 				int miny_2 = this.yCoord - block_range_2;
@@ -167,7 +175,12 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 	
 	public boolean isInRange(int x, int y, int z) {
 		double distance = MathPlus.distanceXYZ(this, x, y, z);
-		return !(CCPlus.block_analyzer_range != -1 && distance > CCPlus.block_analyzer_range);
+		return isInRange(distance);
+	}
+	
+	public boolean isInRange(double distance) {
+		boolean inRange = ((CCPlus.block_analyzer_range != -1) ? distance <= CCPlus.block_analyzer_range : true);
+		return inRange;
 	}
 
 }
