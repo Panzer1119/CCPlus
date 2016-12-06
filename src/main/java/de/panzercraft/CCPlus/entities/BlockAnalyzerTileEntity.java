@@ -24,7 +24,6 @@ import net.minecraft.world.World;
 public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 	
 	private World world;
-	private final BlockPos position_this = new BlockPos(xCoord, yCoord, zCoord);
 	
 	public BlockAnalyzerTileEntity(World world) {
 		this.world = world;
@@ -38,10 +37,12 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 	@Override
 	public String[] getMethodNames() {
 		return new String[] {"getBlock", "isBlockInRange", "getBlocks", "setBlocks"}; 
+		//FIXME Um meteore zu finden muss ich nach (Tile)Entity suchen und nicht Block
 	}
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+		BlockPos position_this = new BlockPos(xCoord, yCoord, zCoord);
 		switch(method) {
 			case 0:
 				if(!CCPlus.block_analyzer_getBlock_enabled) {
@@ -221,9 +222,6 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 								continue;
 							}
 							Block temp = world.getBlock(pos.x, pos.y, pos.z);
-							if(temp instanceof BlockAnalyzer) {
-								continue;
-							}
 							if(temp.getUnlocalizedName().contains("computer") || temp.getUnlocalizedName().contains("network") || temp.getUnlocalizedName().contains("blockanalyzer")) {
 								continue;
 							}
@@ -232,6 +230,7 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 								
 							} else if(extra_3.equalsIgnoreCase("sphere") || extra_3.equalsIgnoreCase("spheric")) {
 								if(distance > block_range_3) {
+									System.out.println(String.format("%s : %s is with %.14f out of the range %d", position_this, pos, distance, block_range_3));
 									continue;
 								}
 							}
