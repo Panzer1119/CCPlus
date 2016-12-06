@@ -198,6 +198,12 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 				if(arguments.length > 2) {
 					extra_3 = ((String) arguments[2]);
 				}
+				String extra_3_2 = "";
+				int extra_3_3 = -1;
+				if(arguments.length > 4) {
+					extra_3_2 = ((String) arguments[3]);
+					extra_3_3 = ((Number) arguments[4]).intValue();
+				}
 				boolean inRange_3 = isInRange(block_range_3);
 				if(!inRange_3) {
 					return new Object[] {};
@@ -230,7 +236,14 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 								
 							} else if(extra_3.equalsIgnoreCase("sphere") || extra_3.equalsIgnoreCase("spheric")) {
 								if(distance > block_range_3) {
-									System.out.println(String.format("%s : %s is with %.14f out of the range %d", position_this, pos, distance, block_range_3));
+									//System.out.println(String.format("%s : %s is with %.14f out of the range %d", position_this, pos, distance, block_range_3));
+									continue;
+								}
+							}
+							if(extra_3_2.equalsIgnoreCase("filled")) {
+								
+							} else if(extra_3_2.equalsIgnoreCase("hollow")) {
+								if(distance <= extra_3_3) {
 									continue;
 								}
 							}
