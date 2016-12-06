@@ -15,6 +15,7 @@ import de.panzercraft.CCPlus.blocks.BlockPos;
 import de.panzercraft.CCPlus.blocks.BlockPosExact;
 import de.panzercraft.CCPlus.utils.MathPlus;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -204,6 +205,15 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 					extra_3_2 = ((String) arguments[3]);
 					extra_3_3 = ((Number) arguments[4]).intValue();
 				}
+				boolean clear = false;
+				for(Object o : arguments) {
+					if(o instanceof String) {
+						String s = (String) o;
+						if(s.equalsIgnoreCase("clear") || s.equalsIgnoreCase("clean")) {
+							clear = true;
+						}
+					}
+				}
 				boolean inRange_3 = isInRange(block_range_3);
 				if(!inRange_3) {
 					return new Object[] {};
@@ -236,6 +246,9 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 								
 							} else if(extra_3.equalsIgnoreCase("sphere") || extra_3.equalsIgnoreCase("spheric")) {
 								if(distance > block_range_3) {
+									if(clear) {
+										world.setBlock(pos.x, pos.y, pos.z, Blocks.air);
+									}
 									//System.out.println(String.format("%s : %s is with %.14f out of the range %d", position_this, pos, distance, block_range_3));
 									continue;
 								}
@@ -244,6 +257,9 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 								
 							} else if(extra_3_2.equalsIgnoreCase("hollow")) {
 								if(distance <= extra_3_3) {
+									if(clear) {
+										world.setBlock(pos.x, pos.y, pos.z, Blocks.air);
+									}
 									continue;
 								}
 							}
