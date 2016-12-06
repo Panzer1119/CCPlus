@@ -50,8 +50,7 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 					world_2 = MinecraftServer.getServer().worldServerForDimension(dim);
 				}
 				if(CCPlus.block_analyzer_enable_dimensional_analysis || dim == world.provider.dimensionId) {
-					double distance = MathPlus.distanceXYZ(this.xCoord, this.yCoord, this.zCoord, x, y, z);
-					if(CCPlus.block_analyzer_range != -1 && distance > CCPlus.block_analyzer_range) {
+					if(!isInRange(x, y, z)) {
 						return new Object[] {"Out of range"};
 					} else {
 						if(CCPlus.block_analyzer_enable_dimensional_analysis && dim != world.provider.dimensionId && world_2 == null) {
@@ -90,6 +89,11 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 	@Override
 	public boolean equals(IPeripheral other) {
 		return other == this && other instanceof BlockAnalyzerTileEntity;
+	}
+	
+	public boolean isInRange(int x, int y, int z) {
+		double distance = MathPlus.distanceXYZ(this, x, y, z);
+		return !(CCPlus.block_analyzer_range != -1 && distance > CCPlus.block_analyzer_range);
 	}
 
 }

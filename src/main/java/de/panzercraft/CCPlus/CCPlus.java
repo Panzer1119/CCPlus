@@ -72,7 +72,7 @@ import ibxm.Player;
 public class CCPlus {
 	
     public static final String MODID = "CCPlus";
-    public static final String VERSION = "0.1.5_2016.12.04";
+    public static final String VERSION = "0.1.6_2016.12.06";
     
     @Instance(value = "CCPlus")
     public static CCPlus ccplus;

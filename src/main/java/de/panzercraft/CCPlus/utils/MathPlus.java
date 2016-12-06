@@ -1,6 +1,7 @@
 package de.panzercraft.CCPlus.utils;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 
 public class MathPlus {
 	
@@ -34,6 +35,30 @@ public class MathPlus {
 	
 	public static double distanceXZ(Entity e1, double x2, double z2) {
 		return distanceXZ(e1.posX, e1.posZ, x2, z2);
+	}
+	
+	public static double distanceXYZ(TileEntity e1, TileEntity e2) {
+		if(e1.getWorldObj().provider.dimensionId != e2.getWorldObj().provider.dimensionId) {
+			return -1.0;
+		} else {
+			return distanceXYZ(e1.xCoord, e1.yCoord, e1.zCoord, e2.xCoord, e2.yCoord, e2.zCoord);
+		}
+	}
+	
+	public static double distanceXZ(TileEntity e1, TileEntity e2) {
+		if(e1.getWorldObj().provider.dimensionId != e2.getWorldObj().provider.dimensionId) {
+			return -1.0;
+		} else {
+			return distanceXZ(e1.xCoord, e1.zCoord, e2.xCoord, e2.zCoord);
+		}
+	}
+	
+	public static double distanceXYZ(TileEntity e1, double x2, double y2, double z2) {
+		return distanceXYZ(e1.xCoord, e1.yCoord, e1.zCoord, x2, y2, z2);
+	}
+	
+	public static double distanceXZ(TileEntity e1, double x2, double z2) {
+		return distanceXZ(e1.xCoord, e1.zCoord, x2, z2);
 	}
 
 }
