@@ -139,7 +139,11 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 						}
 					}
 				}
-				return new Object[] {positions};
+				HashMap<Integer, Object> positions_map = new HashMap<Integer, Object>();
+				for(int i = 0; i < positions.size(); i++) {
+					positions_map.put((i + 1), positions.get(i));
+				}
+				return new Object[] {positions_map};
 			default:
 				return new Object[] {};
 		}
