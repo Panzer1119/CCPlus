@@ -27,5 +27,13 @@ public class MathPlus {
 			return distanceXZ(e1.posX, e1.posZ, e2.posX, e2.posZ);
 		}
 	}
+	
+	public static double distanceXYZ(Entity e1, double x2, double y2, double z2) {
+		return distanceXYZ(e1.posX, e1.posY, e1.posZ, x2, y2, z2);
+	}
+	
+	public static double distanceXZ(Entity e1, double x2, double z2) {
+		return distanceXZ(e1.posX, e1.posZ, x2, z2);
+	}
 
 }
