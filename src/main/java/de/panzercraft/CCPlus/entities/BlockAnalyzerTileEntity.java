@@ -246,9 +246,6 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 								
 							} else if(extra_3.equalsIgnoreCase("sphere") || extra_3.equalsIgnoreCase("spheric")) {
 								if(distance > block_range_3) {
-									if(clear) {
-										world.setBlock(pos.x, pos.y, pos.z, Blocks.air);
-									}
 									//System.out.println(String.format("%s : %s is with %.14f out of the range %d", position_this, pos, distance, block_range_3));
 									continue;
 								}
