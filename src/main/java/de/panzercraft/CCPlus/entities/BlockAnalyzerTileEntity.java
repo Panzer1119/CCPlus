@@ -10,6 +10,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import de.panzercraft.CCPlus.CCPlus;
+import de.panzercraft.CCPlus.blocks.BlockAnalyzer;
 import de.panzercraft.CCPlus.blocks.BlockPos;
 import de.panzercraft.CCPlus.blocks.BlockPosExact;
 import de.panzercraft.CCPlus.utils.MathPlus;
@@ -23,6 +24,7 @@ import net.minecraft.world.World;
 public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 	
 	private World world;
+	private final BlockPos position_this = new BlockPos(xCoord, yCoord, zCoord);
 	
 	public BlockAnalyzerTileEntity(World world) {
 		this.world = world;
@@ -35,13 +37,16 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[] {"getBlock", "isBlockInRange", "getBlocks"}; 
+		return new String[] {"getBlock", "isBlockInRange", "getBlocks", "setBlocks"}; 
 	}
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 		switch(method) {
 			case 0:
+				if(!CCPlus.block_analyzer_getBlock_enabled) {
+					return new Object[] {};
+				}
 				HashMap<String, Object> data = new HashMap<String, Object>();
 				int x = ((Number) arguments[0]).intValue();
 				int y = ((Number) arguments[1]).intValue();
@@ -75,11 +80,18 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 				}
 				return new Object[] {data};
 			case 1:
+				if(!CCPlus.block_analyzer_isBlockInRange_enabled) {
+					return new Object[] {};
+				}
 				String block_unlocalizedName = ((String) arguments[0]);
 				int block_range = ((Number) arguments[1]).intValue();
 				boolean inRange = isInRange(block_range);
 				if(!inRange) {
 					return new Object[] {};
+				}
+				String extra = "";
+				if(arguments.length > 2) {
+					extra = ((String) arguments[2]);
 				}
 				int minx = this.xCoord - block_range;
 				int maxx = this.xCoord + block_range;
@@ -94,6 +106,14 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 					for(int y2 = miny; y2 <= maxy; y2++) {
 						for(int z2 = minz; z2 <= maxz; z2++) {
 							BlockPos pos = new BlockPos(x2, y2, z2);
+							double distance = MathPlus.distanceXYZ(position_this, pos);
+							if(extra.equalsIgnoreCase("cube") || extra.equalsIgnoreCase("cubic")) {
+								
+							} else if(extra.equalsIgnoreCase("sphere") || extra.equalsIgnoreCase("spheric")) {
+								if(distance > block_range) {
+									continue;
+								}
+							}
 							Block block = world.getBlock(pos.x, pos.y, pos.z);
 							if(block != null) {
 								if(block.getUnlocalizedName().equals(block_unlocalizedName)) {
@@ -114,11 +134,18 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 				}
 				return new Object[] {found};
 			case 2:
+				if(!CCPlus.block_analyzer_getBlocks_enabled) {
+					return new Object[] {};
+				}
 				String block_unlocalizedName_2 = ((String) arguments[0]);
 				int block_range_2 = ((Number) arguments[1]).intValue();
 				boolean inRange_2 = isInRange(block_range_2);
 				if(!inRange_2) {
 					return new Object[] {};
+				}
+				String extra_2 = "";
+				if(arguments.length > 2) {
+					extra_2 = ((String) arguments[2]);
 				}
 				int minx_2 = this.xCoord - block_range_2;
 				int maxx_2 = this.xCoord + block_range_2;
@@ -133,6 +160,14 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 					for(int y2 = miny_2; y2 <= maxy_2; y2++) {
 						for(int z2 = minz_2; z2 <= maxz_2; z2++) {
 							BlockPos pos = new BlockPos(x2, y2, z2);
+							double distance = MathPlus.distanceXYZ(position_this, pos);
+							if(extra_2.equalsIgnoreCase("cube") || extra_2.equalsIgnoreCase("cubic")) {
+								
+							} else if(extra_2.equalsIgnoreCase("sphere") || extra_2.equalsIgnoreCase("spheric")) {
+								if(distance > block_range_2) {
+									continue;
+								}
+							}
 							Block block = world.getBlock(pos.x, pos.y, pos.z);
 							if(block != null) {
 								if(block.getUnlocalizedName().equals(block_unlocalizedName_2)) {
@@ -152,6 +187,62 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 					positions_map.put((i + 1), positions.get(i));
 				}
 				return new Object[] {positions_map};
+			case 3:
+				if(CCPlus.block_analyzer_setBlocks_disabled) {
+					return new Object[] {};
+				}
+				String block_unlocalizedName_3 = ((String) arguments[0]);
+				int block_range_3 = ((Number) arguments[1]).intValue();
+				String extra_3 = "";
+				if(arguments.length > 2) {
+					extra_3 = ((String) arguments[2]);
+				}
+				boolean inRange_3 = isInRange(block_range_3);
+				if(!inRange_3) {
+					return new Object[] {};
+				}
+				int minx_3 = this.xCoord - block_range_3;
+				int maxx_3 = this.xCoord + block_range_3;
+				int miny_3 = this.yCoord - block_range_3;
+				int maxy_3 = this.yCoord + block_range_3;
+				int minz_3 = this.zCoord - block_range_3;
+				int maxz_3 = this.zCoord + block_range_3;
+				BlockPos minpos_3 = new BlockPos(minx_3, miny_3, minz_3);
+				BlockPos maxpos_3 = new BlockPos(maxx_3, maxy_3, maxz_3);
+				Block block = Block.getBlockFromName(block_unlocalizedName_3);
+				if(block == null) {
+					return new Object[] {false};
+				}
+				for(int x2 = minx_3; x2 <= maxx_3; x2++) {
+					for(int y2 = miny_3; y2 <= maxy_3; y2++) {
+						for(int z2 = minz_3; z2 <= maxz_3; z2++) {
+							BlockPos pos = new BlockPos(x2, y2, z2);
+							if(position_this.equals(pos)) {
+								continue;
+							}
+							Block temp = world.getBlock(pos.x, pos.y, pos.z);
+							if(temp instanceof BlockAnalyzer) {
+								continue;
+							}
+							if(temp.getUnlocalizedName().contains("computer") || temp.getUnlocalizedName().contains("network") || temp.getUnlocalizedName().contains("blockanalyzer")) {
+								continue;
+							}
+							double distance = MathPlus.distanceXYZ(position_this, pos);
+							if(extra_3.equalsIgnoreCase("cube") || extra_3.equalsIgnoreCase("cubic")) {
+								
+							} else if(extra_3.equalsIgnoreCase("sphere") || extra_3.equalsIgnoreCase("spheric")) {
+								if(distance > block_range_3) {
+									continue;
+								}
+							}
+							//if(block.getUnlocalizedName().equals(block_unlocalizedName_3)) {
+								world.setBlock(pos.x, pos.y, pos.z, block);
+								//System.out.println(String.format("Setted block %s at %d/%d/%d", block.getUnlocalizedName(), pos.x, pos.y, pos.z));
+							//}
+						}
+					}
+				}
+				return new Object[] {true};
 			default:
 				return new Object[] {};
 		}

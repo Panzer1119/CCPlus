@@ -102,6 +102,11 @@ public class CCPlus {
     public static String[] player_detector_plus_blacklisted_players = new String[] {};
     public static boolean player_detector_plus_player_blacklist_enabled = false;
     public static boolean block_analyzer_enable_dimensional_analysis = false;
+    public static boolean block_analyzer_getBlock_enabled = true;
+    public static boolean block_analyzer_isBlockInRange_enabled = true;
+    public static boolean block_analyzer_getBlocks_enabled = true;
+    public static boolean block_analyzer_setBlocks_disabled = true;
+    
     public static int block_analyzer_range = 100;
     
     public static String debug_log_output_folder = "";
@@ -313,6 +318,22 @@ public class CCPlus {
     	prop = config.get("block_analyzer", "block_analyzer_range", block_analyzer_range);
     	prop.comment = "Sets the range/radius of the block analyzer (-1 for infinite a range) (Default: 100)";
     	block_analyzer_range = prop.getInt(block_analyzer_range);
+    	
+    	prop = config.get("block_analyzer", "block_analyzer_getBlock_enabled", block_analyzer_getBlock_enabled);
+    	prop.comment = "Enables the getBlock function of the block analyzer (Default: true)";
+    	block_analyzer_getBlock_enabled = prop.getBoolean(block_analyzer_getBlock_enabled);
+    	
+    	prop = config.get("block_analyzer", "block_analyzer_isBlockInRange_enabled", block_analyzer_isBlockInRange_enabled);
+    	prop.comment = "Enables the isBlockInRange function of the block analyzer (Default: true)";
+    	block_analyzer_isBlockInRange_enabled = prop.getBoolean(block_analyzer_isBlockInRange_enabled);
+    	
+    	prop = config.get("block_analyzer", "block_analyzer_getBlocks_enabled", block_analyzer_getBlocks_enabled);
+    	prop.comment = "Enables the getBlocks function of the block analyzer (Default: true)";
+    	block_analyzer_getBlocks_enabled = prop.getBoolean(block_analyzer_getBlocks_enabled);
+    	
+    	prop = config.get("block_analyzer", "block_analyzer_setBlocks_disabled", block_analyzer_setBlocks_disabled);
+    	prop.comment = "Enables the setBlocks function of the block analyzer (Default: true)";
+    	block_analyzer_setBlocks_disabled = prop.getBoolean(block_analyzer_setBlocks_disabled);
     	
     	prop = config.get("debug", "debug_log_output_folder", debug_log_output_folder);
     	prop.comment = "The folder where the logs will be put in";

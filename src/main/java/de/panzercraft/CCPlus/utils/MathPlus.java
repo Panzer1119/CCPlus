@@ -1,5 +1,7 @@
 package de.panzercraft.CCPlus.utils;
 
+import de.panzercraft.CCPlus.blocks.BlockPos;
+import de.panzercraft.CCPlus.blocks.BlockPosExact;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
@@ -59,6 +61,22 @@ public class MathPlus {
 	
 	public static double distanceXZ(TileEntity e1, double x2, double z2) {
 		return distanceXZ(e1.xCoord, e1.zCoord, x2, z2);
+	}
+	
+	public static double distanceXYZ(BlockPos pos1, BlockPos pos2) {
+		return distanceXYZ(pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
+	}
+	
+	public static double distanceXZ(BlockPos pos1, BlockPos pos2) {
+		return distanceXZ(pos1.x, pos1.z, pos2.x, pos2.z);
+	}
+	
+	public static double distanceXYZ(BlockPosExact pos1, BlockPosExact pos2) {
+		return distanceXYZ(pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
+	}
+	
+	public static double distanceXZ(BlockPosExact pos1, BlockPosExact pos2) {
+		return distanceXZ(pos1.x, pos1.z, pos2.x, pos2.z);
 	}
 
 }
