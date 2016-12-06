@@ -1,4 +1,13 @@
 ###############################################
+Version 0.1.6
+- Added more distance calculation methods
+- Block analyzer can now search for blocks
+  and can gave you a list with all blocks coordinates
+- Block analyzer can set blocks when enabled in
+  the config
+- peripheral.call("left", "setBlocks", "glowstone", 20, "sphere", "hollow", 19, "clear")
+
+###############################################
 Version 0.1.5
 - Added a WorldGenerator
 - Added a creative tab for CCPlus
