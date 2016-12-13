@@ -19,6 +19,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -253,13 +254,25 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 							if(extra_3_2.equalsIgnoreCase("filled")) {
 								
 							} else if(extra_3_2.equalsIgnoreCase("hollow")) {
-								if(distance <= extra_3_3) {
-									if(clear) {
-										world.setBlock(pos.x, pos.y, pos.z, Blocks.air);
+								if(extra_3.equalsIgnoreCase("sphere") || extra_3.equalsIgnoreCase("spheric")) {
+									if(distance <= extra_3_3) {
+										if(clear) {
+											world.setBlock(pos.x, pos.y, pos.z, Blocks.air);
+										}
+										continue;
 									}
-									continue;
+								} else {
+									//Double[] dists = getDistances(pos.toBlockPosExact(), position_this.toBlockPosExact());
+									int dis = Math.abs(block_range_3 - Math.abs(position_this.x - pos.x)) + Math.abs(block_range_3 - Math.abs(position_this.y - pos.y)) + Math.abs(block_range_3 - Math.abs(position_this.z - pos.z)); //FIXME THIS IS SHIT
+									if(dis <= Math.abs(block_range_3 - extra_3_3)) {
+										if(clear) {
+											world.setBlock(pos.x, pos.y, pos.z, Blocks.air);
+										}
+										continue;
+									}
 								}
 							}
+							//peripheral.call("left", "setBlocks", "glowstone", 10, "sphere", "hollow", 9, "clear") --Example
 							//if(block.getUnlocalizedName().equals(block_unlocalizedName_3)) {
 								world.setBlock(pos.x, pos.y, pos.z, block);
 								//System.out.println(String.format("Setted block %s at %d/%d/%d", block.getUnlocalizedName(), pos.x, pos.y, pos.z));
@@ -271,6 +284,38 @@ public class BlockAnalyzerTileEntity extends TileEntity implements IPeripheral {
 			default:
 				return new Object[] {};
 		}
+	}
+	
+	@Deprecated
+	private Double[] getDistances(BlockPosExact pos1, BlockPosExact pos2) {
+		Double[] dists = new Double[6];
+		for(EnumFacing face : EnumFacing.values()) {
+			double distance = 0.0;
+			switch(face) {
+				case DOWN:
+					distance = Math.abs(pos1.y - pos2.y);
+					break;
+				case EAST:
+					distance = Math.abs(pos1.y - pos2.y);
+					break;
+				case NORTH:
+					distance = Math.abs(pos1.z - pos2.z);
+					break;
+				case SOUTH:
+					distance = Math.abs(pos1.z - pos2.z);
+					break;
+				case UP:
+					distance = Math.abs(pos1.x - pos2.x);
+					break;
+				case WEST:
+					distance = Math.abs(pos1.x - pos2.x);
+					break;
+				default:
+					break;
+			}
+			dists[face.ordinal()] = distance;
+		}
+		return dists;
 	}
 
 	@Override

@@ -66,6 +66,11 @@ public class BlockPosExact {
         return this.x == other.x && this.y == other.y && this.z == other.z;
     }
     
+    public BlockPos toBlockPos() {
+    	BlockPos pos = new BlockPos((int) x, (int) y, (int) z);
+    	return pos;
+    }
+    
     @Override
     public String toString() {
         return String.format("%.14f;%.14f;%.14f;%d", x, y, z, dimension);

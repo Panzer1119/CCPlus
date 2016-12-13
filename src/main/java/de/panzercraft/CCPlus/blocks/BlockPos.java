@@ -43,6 +43,11 @@ public class BlockPos {
         return this.x == other.x && this.y == other.y && this.z == other.z;
     }
     
+    public BlockPosExact toBlockPosExact() {
+    	BlockPosExact pos = new BlockPosExact(x, y, z);
+    	return pos;
+    }
+    
     @Override
     public String toString() {
         return String.format("(%s,%s,%s)", x, y, z);
